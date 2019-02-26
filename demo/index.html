@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+		<title>d2l-common demo</title>
+
+		<script src="../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+
+		<script type="module">
+			import '@polymer/iron-demo-helpers/demo-pages-shared-styles';
+			import '@polymer/iron-demo-helpers/demo-snippet';
+			import 'd2l-typography/d2l-typography';
+			import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+
+			const style = html`
+				<custom-style>
+					<style is="custom-style" include="d2l-typography"></style>
+				</custom-style>
+				<custom-style>
+					<style is="custom-style" include="demo-pages-shared-styles"></style>
+				</custom-style>
+				`;
+
+			document.head.appendChild(style.content);
+		</script>
+
+		<style>
+			html {
+				font-size: 20px;
+			}
+		</style>
+	</head>
+	<body unresolved class="d2l-typography">
+		<div class="vertical-section-container centered">
+			<h3>Demos</h3>
+			<ul>
+				<li><a href="d2l-hm-filter/d2l-hm-filter.html">d2l-hm-filter</a></li>
+			</ul>
+		</div>
+	</body>
+</html>
