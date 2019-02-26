@@ -33,6 +33,7 @@
     "wct-mocha": "^1.0.0"
   },
   "dependencies": {
-    "@polymer/polymer": "^3.0.0"
+    "@polymer/polymer": "^3.0.0",
+    "d2l-polymer-siren-behaviors": "Brightspace/polymer-siren-behaviors#semver:^1"
   }
 }
