@@ -4,9 +4,9 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-		<title>d2l-common demo</title>
+		<title>d2l-hm-filter demo</title>
 
-		<script src="../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 
 		<script type="module">
 			import '@polymer/iron-demo-helpers/demo-pages-shared-styles';
@@ -26,6 +26,8 @@
 			document.head.appendChild(style.content);
 		</script>
 
+		<script type="module" src="../../components/d2l-hm-filter/d2l-hm-filter.js"></script>
+
 		<style>
 			html {
 				font-size: 20px;
@@ -34,10 +36,12 @@
 	</head>
 	<body unresolved class="d2l-typography">
 		<div class="vertical-section-container centered">
-			<h3>Demos</h3>
-			<ul>
-				<li><a href="d2l-hm-filter/d2l-hm-filter.html">d2l-hm-filter</a></li>
-			</ul>
+			<h3>d2l-hm-filter</h3>
+			<demo-snippet>
+				<template>
+					<d2l-hm-filter></d2l-hm-filter>
+				</template>
+			</demo-snippet>
 		</div>
 	</body>
 </html>

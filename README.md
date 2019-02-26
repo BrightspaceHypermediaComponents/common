@@ -14,18 +14,24 @@ npm install d2l-common
 
 ## Usage
 
-Include the [webcomponents.js](http://webcomponents.org/polyfills/) "loader" polyfill (for browsers who don't natively support web components), then import `d2l-common.js`:
+Include the [webcomponents.js](http://webcomponents.org/polyfills/) "loader" polyfill (for browsers who don't natively support web components), then import the components you want:
 
 ```html
 <head>
 	<script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-	<script type="module" src="node_modules/d2l-common/d2l-common.js"></script>
+	<script type="module" src="node_modules/d2l-common/components/d2l-hm-filter/d2l-hm-filter.js"></script>
 </head>
 ```
 
 ```html
-<d2l-common></d2l-common>
+<d2l-hm-filter></d2l-hm-filter>
 ```
+
+## Components
+
+### Filter
+
+This is a HM wrapper around the filter component from `d2l-facet-filter-sort`.  It takes a `href` for a filters collection.
 
 ## Developing, Testing and Contributing
 
