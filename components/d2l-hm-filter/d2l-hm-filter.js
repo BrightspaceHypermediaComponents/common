@@ -26,6 +26,10 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				type: Boolean,
 				value: false
 			},
+			categoryWhitelist: {
+				type: Array,
+				value: []
+			},
 			_filters: {
 				type: Array,
 				value: [
@@ -133,21 +137,28 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
+	_shouldApplyWhitelist() {
+		return this.categoryWhitelist && this.categoryWhitelist.length;
+	}
+
 	async _parseFilters(entity) {
 		const filters = [];
+		var whiteList = this._shouldApplyWhitelist();
 		for (let i = 0; i < entity.entities.length; i++) {
 			const filter = entity.entities[i];
-			const item = {
-				key: this._getFilterKeyFromClasses(filter.class),
-				title: filter.title.replace(/^_+/, ''),
-				href: filter.href,
-				loaded: false,
-				clearAction: this._getAction(filter, 'clear'),
-				options: []
-			};
-			filters.push(item);
+			const fKey = this._getFilterKeyFromClasses(filter.class);
+			if (!whiteList || this._findInArray(this.categoryWhitelist, c => c === fKey)) {
+				const item = {
+					key: fKey,
+					title: this._getFilterTitle(filter),
+					href: filter.href,
+					loaded: false,
+					clearAction: this._getAction(filter, 'clear'),
+					options: []
+				};
+				filters.push(item);
+			}
 		}
-
 		if (filters && filters.length) {
 			// The other filters are lazily loaded when their tab is opened for the first time.
 			filters[0].options = await this._getFilterOptions(filters[0].href);
@@ -170,16 +181,16 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleOptionChanged(event) {
-		let filter = this._getFilterByKey(event.detail.categoryKey);
-		let option = this._getFilterOptionByKey(event.detail.categoryKey, event.detail.optionKey);
-		if (option && option.selected != event.detail.newValue) {
-			let apply = await this._toggleOption(filter, option);
+		const filter = this._getFilterByKey(event.detail.categoryKey);
+		const option = this._getFilterOptionByKey(event.detail.categoryKey, event.detail.optionKey);
+		if (option && option.selected !== event.detail.newValue) {
+			const apply = await this._toggleOption(filter, option);
 			if (apply) {
 				filter.clearAction = this._getAction(apply, 'clear');
-				let applyAll = await this._apply(apply);
+				const applyAll = await this._apply(apply);
 				if (applyAll) {
 					this._clearAction = this._getAction(applyAll, 'clear');
-					let applied =  await this._apply(applyAll);
+					const applied =  await this._apply(applyAll);
 					if (applied) {
 						this._dispatchFiltersUpdated(applied);
 					}
@@ -217,6 +228,10 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	_getOptionKey(option) {
 		return option.title.replace(/\s/g, '');
+	}
+
+	_getFilterTitle(filter) {
+		return filter.title.replace(/^_+/, '');
 	}
 
 	_getOptionToggleAction(option) {
@@ -276,10 +291,12 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		const cleared = await this.performSirenAction(this._clearAction);
 		this._clearAction = this._getAction(cleared, 'clear');
 		for (let i = 0; i < cleared.entities.length; i++) {
-			const filterEntity = await this._fetchFromStore(cleared.entities[i].href);
-			const fKey = this._getFilterKeyFromClasses(filterEntity.entity.class);
+			const fKey = this._getFilterKeyFromClasses(cleared.entities[i].class);
 			const filter = this._findInArray(this._filters, f => f.key === fKey);
-			this._updateToggleActions(filterEntity.entity, filter);
+			if (filter) {
+				const filterEntity = await this._fetchFromStore(cleared.entities[i].href);
+				this._updateToggleActions(filterEntity.entity, filter);
+			}
 		}
 		this._filters.forEach(f => {
 			f.options.forEach(o => {
