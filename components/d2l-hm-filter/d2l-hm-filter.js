@@ -73,6 +73,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			this.addEventListener('d2l-filter-dropdown-option-changed', this._handleOptionChanged);
 		}
 		this.addEventListener('d2l-filter-selected-changed', this._handleSelectedFilterChanged);
+		this.addEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
 	detached() {
@@ -82,6 +83,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			this.removeEventListener('d2l-filter-dropdown-option-changed', this._handleOptionChanged);
 		}
 		this.removeEventListener('d2l-filter-selected-changed', this._handleSelectedFilterChanged);
+		this.removeEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
 	_fetchFromStore(url) {
@@ -205,8 +207,12 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			filter.options = await this._getFilterOptions(filter.href);
 			this._populateFilterDropdown(filter);
 			filter.loaded = true;
-
 		}
+	}
+
+	async _handleFiltersCleared() {
+		const result = await this._clearAllOptions();
+		this._dispatchFiltersUpdated(result);
 	}
 
 	async _getFilterOptions(href) {
