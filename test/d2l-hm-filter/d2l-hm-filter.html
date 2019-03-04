@@ -18,20 +18,10 @@
 
 		<test-fixture id="basic">
 			<template>
-				<d2l-hm-filter></d2l-hm-filter>
+				<d2l-hm-filter href="blah" token="t"></d2l-hm-filter>
 			</template>
 		</test-fixture>
 
-		<script type="module">
-			suite('d2l-hm-filter', function() {
-				test('instantiating the element works', function() {
-					var element = fixture('basic');
-					assert.equal(element.prop1, 'd2l-hm-filter');
-					const elementShadowRoot = element.shadowRoot;
-					const elementHeader = elementShadowRoot.querySelector('h2');
-					assert.equal(elementHeader.innerHTML, 'd2l-hm-filter');
-				});
-			});
-		</script>
+		<script type="module" src="./d2l-hm-filter.js"></script>
 	</body>
 </html>
