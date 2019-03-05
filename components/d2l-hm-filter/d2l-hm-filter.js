@@ -364,13 +364,27 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
+	_getTotalSelectedFilters() {
+		let result = 0;
+		for (let i = 0; i < this._filters.length; i++) {
+			for (let j = 0; j < this._filters[i].options.length; j++) {
+				if (this._filters[i].options[j].selected) {
+					result++;
+				}
+			}
+		}
+		return result;
+	}
+
 	_dispatchFiltersUpdated(filtered) {
+		console.log(this._getTotalSelectedFilters());
 		this.dispatchEvent(
 			new CustomEvent(
 				'd2l-hm-filter-filters-updated',
 				{
 					detail: {
-						filteredActivities: filtered
+						filteredActivities: filtered,
+						totalSelectedFilters: this._getTotalSelectedFilters()
 					},
 					composed: true,
 					bubbles: true
