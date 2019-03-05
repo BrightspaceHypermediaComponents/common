@@ -127,7 +127,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	_populateFilterDropdown(filter) {
 		if (filter) {
 			filter.options.forEach(function(o) {
-				this._dropdown.addFilterOption(filter.key, o.key, o.title);
+				this._dropdown.addFilterOption(filter.key, o.key, o.title, o.selected);
 			}.bind(this));
 		} else {
 			this._filters.forEach(function(f) {
