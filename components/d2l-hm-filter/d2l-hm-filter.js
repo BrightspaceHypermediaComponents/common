@@ -194,9 +194,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleOptionChanged(event) {
-		const filter = this._getFilterByKey(event.detail.categoryKey);
 		const option = this._getFilterOptionByKey(event.detail.categoryKey, event.detail.optionKey);
 		if (option && option.selected !== event.detail.newValue) {
+			const filter = this._getFilterByKey(event.detail.categoryKey);
 			const apply = await this._toggleOption(filter, option);
 			if (apply) {
 				filter.clearAction = this._getAction(apply, 'clear');
@@ -229,15 +229,17 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _getFilterOptions(href) {
 		const options = [];
 		const filter = await this._fetchFromStore(href);
-		for (let i = 0; i < filter.entity.entities.length; i++) {
-			const o = filter.entity.entities[i];
-			options.push({
-				title: o.title,
-				key: this._getOptionKey(o),
-				categoryKey: this._getFilterKeyFromClasses(filter.entity.class),
-				selected: this._getOptionStatusFromClasses(o.class),
-				toggleAction: this._getOptionToggleAction(o)
-			});
+		if (filter && filter.entity && filter.entity.entities) {
+			for (let i = 0; i < filter.entity.entities.length; i++) {
+				const o = filter.entity.entities[i];
+				options.push({
+					title: o.title,
+					key: this._getOptionKey(o),
+					categoryKey: this._getFilterKeyFromClasses(filter.entity.class),
+					selected: this._getOptionStatusFromClasses(o.class),
+					toggleAction: this._getOptionToggleAction(o)
+				});
+			}
 		}
 
 		return options;
@@ -268,8 +270,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 					let apply = null;
 					for (let i = 0; i < f.options.length; i++) {
 						const o = f.options[i];
+						const optionShouldBeSelected = this._findInArray(activatedOptions, ao => ao.categoryKey === f.key && ao.optionKey === o.key);
 						// XOR
-						if (!(this._findInArray(activatedOptions, ao => ao.categoryKey === f.key && ao.optionKey === o.key)) !== !o.selected) {
+						if (!(optionShouldBeSelected) !== !o.selected) {
 							apply = await this._toggleOption(f, o);
 						}
 					}
