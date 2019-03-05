@@ -41,6 +41,13 @@
 			loaded: false,
 			clearAction: null,
 			options:[]
+		}, {
+			key: 'filter-category-3',
+			title: 'By Filter Category 3',
+			href: 'data/category3.json',
+			loaded: false,
+			clearAction: null,
+			options:[]
 		}
 	];
 
@@ -55,7 +62,7 @@
 			assert.equal(expected, obj);
 			return;
 		}
-		for (var prop in obj) {
+		for (const prop in obj) {
 			if (obj.hasOwnProperty(prop) && prop[0] !== '_') {
 				if (obj[prop] instanceof Array) {
 					assert(expected[prop] instanceof Array);
@@ -87,6 +94,15 @@
 			await loadFilters('data/filters.json');
 			assert.equal(expectedFilters.length, filter._filters.length);
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
+		});
+		test('whitelist filters and sorts available filters', async() => {
+			const whiteList = ['filter-category-3', 'filter-category-1'];
+			filter.categoryWhitelist = whiteList;
+			await loadFilters('data/filters.json');
+			assert.equal(whiteList.length, filter._filters.length);
+			for (let i = 0; i < whiteList.length; i++) {
+				assert.equal(whiteList[i], filter._filters[i].key);
+			}
 		});
 	});
 })();

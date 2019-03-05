@@ -27,6 +27,11 @@
 			"href":"data/category2.json",
 			"class":["collection","filters","filter-category-2"],
 			"title":"_By Filter Category 2"
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filters/collection"],
+			"href":"data/category3.json",
+			"class":["collection","filters","filter-category-3"],
+			"title":"_By Filter Category 3"
 		}
 	]
 }
