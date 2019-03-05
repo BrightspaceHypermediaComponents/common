@@ -143,22 +143,29 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		return this.categoryWhitelist && this.categoryWhitelist.length;
 	}
 
+	_parseEntityToFilter(entity) {
+		return {
+			key: this._getFilterKeyFromClasses(entity.class),
+			title: this._getFilterTitle(entity),
+			href: entity.href,
+			loaded: false,
+			clearAction: this._getAction(entity, 'clear'),
+			options: []
+		};
+	}
+
 	async _parseFilters(entity) {
 		const filters = [];
-		var whiteList = this._shouldApplyWhitelist();
-		for (let i = 0; i < entity.entities.length; i++) {
-			const filter = entity.entities[i];
-			const fKey = this._getFilterKeyFromClasses(filter.class);
-			if (!whiteList || this._findInArray(this.categoryWhitelist, c => c === fKey)) {
-				const item = {
-					key: fKey,
-					title: this._getFilterTitle(filter),
-					href: filter.href,
-					loaded: false,
-					clearAction: this._getAction(filter, 'clear'),
-					options: []
-				};
-				filters.push(item);
+		if (this._shouldApplyWhitelist()) {
+			for (let i = 0; i < this.categoryWhitelist.length; i++) {
+				var found = this._findInArray(entity.entities, e => this._getFilterKeyFromClasses(e.class) === this.categoryWhitelist[i]);
+				if (found) {
+					filters.push(this._parseEntityToFilter(found));
+				}
+			}
+		} else {
+			for (let i = 0; i < entity.entities.length; i++) {
+				filters.push(this._parseEntityToFilter(entity.entities[i]));
 			}
 		}
 		if (filters && filters.length) {
