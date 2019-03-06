@@ -3,7 +3,7 @@
 	"actions":[
 		{
 			"name":"clear",
-			"href":"data/filters.json",
+			"href":"components/d2l-common/demo/d2l-hm-filter/data/filters.json",
 			"method":"GET",
 			"type":"application/x-www-form-urlencoded",
 			"fields":[
