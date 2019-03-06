@@ -35,14 +35,14 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				value: [
 					// {
 					// 	key: '',
-					//  title: '',
-					//  href: '',
-					//  loaded: false,
+					// 	title: '',
+					// 	href: '',
+					// 	loaded: false,
 					// 	clearAction: {},
 					// 	options: [
 					// 		{
 					// 			key: '',
-					//  		title: '',
+					//  			title: '',
 					// 			selected: '',
 					// 			toggleAction: {}
 					// 		}
@@ -266,6 +266,10 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 					const cleared = await this.performSirenAction(f.clearAction);
 					f.clearAction = this._getAction(cleared, 'clear');
 					this._updateToggleActions(cleared, f);
+					f.options.forEach(o => {
+						o.selected = false;
+					});
+					applyAll = await this._apply(cleared);
 				} else {
 					let apply = null;
 					for (let i = 0; i < f.options.length; i++) {
@@ -315,6 +319,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			const filter = this._findInArray(this._filters, f => f.key === fKey);
 			if (filter) {
 				const filterEntity = await this._fetchFromStore(cleared.entities[i].href);
+				filter.clearAction = this._getAction(filterEntity, 'clear');
 				this._updateToggleActions(filterEntity.entity, filter);
 			}
 		}
