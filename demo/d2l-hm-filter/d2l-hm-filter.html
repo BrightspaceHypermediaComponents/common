@@ -7,6 +7,10 @@
 		<title>d2l-hm-filter demo</title>
 
 		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+		<!-- For IE11 -->
+		<script src="../../../lie/dist/lie.polyfill.min.js"></script>
+		<script type="module" src="../../../whatwg-fetch/fetch.js"></script>
+		<script type="module" src="../../node_modules/url-polyfill/url-polyfill.js"></script>
 
 		<script type="module">
 			import '@polymer/iron-demo-helpers/demo-pages-shared-styles';
@@ -44,4 +48,10 @@
 			</demo-snippet>
 		</div>
 	</body>
+	<script type="module">
+		document.body.addEventListener('d2l-hm-filter-filters-updated', function(e) {
+			// eslint-disable-next-line no-console
+			console.log('d2l-hm-filter-filters-updated', e.detail);
+		});
+	</script>
 </html>
