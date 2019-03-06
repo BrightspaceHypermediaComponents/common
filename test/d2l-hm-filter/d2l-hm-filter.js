@@ -48,7 +48,7 @@ import sinon from 'sinon/pkg/sinon-esm.js';
 	async function _toggleOption(f, o, fetch) {
 		const result = fetch || sinon.stub(window.d2lfetch, 'fetch');
 		result.withArgs(`${window.location.origin}/data/filters.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.testFixtures.toggled_filters_result));
-		result.withArgs(`${window.location.origin}/data/category1.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.testFixtures.toggled_filters_category_1_result));
+		result.withArgs(`${window.location.origin}/data/category${f + 1}.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.testFixtures[`toggled_filters_category_${f + 1}_result`]));
 		await filter._toggleOption(filter._filters[f], filter._filters[f].options[o]);
 		return result;
 	}
@@ -158,6 +158,19 @@ import sinon from 'sinon/pkg/sinon-esm.js';
 			fetchStub.restore();
 			expectedFilters[tFilter].options[tOption].selected = true;
 			expectedFilters[tFilter].options[tOption].toggleAction.name = 'remove-filter';
+			_assertFiltersEqualGiven(expectedFilters, filter._filters);
+		});
+		test('toggling multiple options works correctly', async() => {
+			await loadFilters('data/filters.json');
+			await filter._handleSelectedFilterChanged({detail: { selectedKey: expectedFilters[1].key }});
+			let fetchStub = await _toggleOption(0, 0);
+			fetchStub = await _toggleOption(1, 0, fetchStub);
+			fetchStub.restore();
+			_addExpectedOptions(1);
+			expectedFilters[0].options[0].selected = true;
+			expectedFilters[1].options[0].selected = true;
+			expectedFilters[0].options[0].toggleAction.name = 'remove-filter';
+			expectedFilters[1].options[0].toggleAction.name = 'remove-filter';
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
 		test('clearing all filters works correctly', async() => {

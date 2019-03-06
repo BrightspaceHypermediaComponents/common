@@ -84,6 +84,50 @@ Object.assign(window.testFixtures, {
 			]
 		};
 	},
+	get toggled_filters_category_2_result() {
+		return {
+			title: '_By Filter Category 2',
+			class: ['collection', 'filters', 'filter-category-2'],
+			actions: [
+				{
+					name: 'clear',
+					href: 'data/category2.json',
+					method: 'GET',
+					type: 'application/x-www-form-urlencoded',
+					fields: [
+						{
+							name: 'existingState',
+							class: ['base64', 'json'],
+							type: 'hidden',
+							value: ''
+						}
+					]
+				}
+			],
+			entities: [
+				{
+					rel: ['item', 'https://api.brightspace.com/rels/filter'],
+					title: 'Option 1',
+					class: ['filter', 'on'],
+					actions: [
+						{
+							name: 'remove-filter',
+							href: 'data/category2.json',
+							method: 'GET',
+							type: 'application/x-www-form-urlencoded',
+							fields: [
+								{
+									name: 'existingState',
+									type: 'hidden',
+									value: ''
+								}
+							]
+						}
+					]
+				}
+			]
+		};
+	},
 	get cleared_filters_result() {
 		return {
 			class: ['collection-filters'],
