@@ -162,7 +162,7 @@ import sinon from 'sinon/pkg/sinon-esm.js';
 		});
 		test('clearing all filters works correctly', async() => {
 			await loadFilters('data/filters.json');
-			let fetchStub = await _toggleOption(0, 0);
+			const fetchStub = await _toggleOption(0, 0);
 			fetchStub.reset();
 			fetchStub.withArgs(`${window.location.origin}/data/filters.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.testFixtures.cleared_filters_result));
 			await filter._clearAllOptions();
