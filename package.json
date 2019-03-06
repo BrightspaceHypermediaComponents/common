@@ -35,6 +35,7 @@
   "dependencies": {
     "@polymer/polymer": "^3.0.0",
     "d2l-facet-filter-sort": "BrightspaceUI/facet-filter-sort#semver:^1",
-    "d2l-polymer-siren-behaviors": "Brightspace/polymer-siren-behaviors#semver:^1"
+    "d2l-polymer-siren-behaviors": "Brightspace/polymer-siren-behaviors#semver:^1",
+    "sinon": "^7.2.7"
   }
 }

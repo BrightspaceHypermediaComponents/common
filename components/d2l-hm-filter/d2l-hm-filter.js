@@ -377,7 +377,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_dispatchFiltersUpdated(filtered) {
-		console.log(this._getTotalSelectedFilters());
 		this.dispatchEvent(
 			new CustomEvent(
 				'd2l-hm-filter-filters-updated',
