@@ -47,8 +47,8 @@
 
 	async function _toggleOption(f, o, fetch) {
 		const result = fetch || sinon.stub(window.d2lfetch, 'fetch');
-		result.withArgs(`${window.location.origin}/data/filters.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.testFixtures.toggled_filters_result));
-		result.withArgs(`${window.location.origin}/data/category${f + 1}.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.testFixtures[`toggled_filters_category_${f + 1}_result`]));
+		result.withArgs(sinon.match('/data/filters.json'), sinon.match.any).returns(_fetchPromise(window.testFixtures.toggled_filters_result));
+		result.withArgs(sinon.match(`/data/category${f + 1}.json`), sinon.match.any).returns(_fetchPromise(window.testFixtures[`toggled_filters_category_${f + 1}_result`]));
 		await filter._toggleOption(filter._filters[f], filter._filters[f].options[o]);
 		return result;
 	}

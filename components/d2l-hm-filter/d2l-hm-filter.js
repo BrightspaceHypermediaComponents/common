@@ -252,7 +252,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_getOptionToggleAction(option) {
-		return this._getAction(option, this._getOptionStatusFromClasses(option.class) ? 'remove-filter' : 'add-filter');
+		const actionName = this._getOptionStatusFromClasses(option.class) ? 'remove-filter' : 'add-filter';
+		return this._getAction(option, actionName);
 	}
 
 	async _toggleFilters(activatedOptions) {
