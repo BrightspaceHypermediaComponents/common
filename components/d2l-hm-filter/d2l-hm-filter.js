@@ -147,7 +147,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		if (entity) {
 			return {
 				key: this._getFilterKeyFromClasses(entity.class),
-				title: this._getFilterTitle(entity),
+				title: entity.title,
 				href: entity.href,
 				loaded: false,
 				clearAction: this._getAction(entity, 'clear'),
@@ -245,10 +245,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	_getOptionKey(option) {
 		return option.title.replace(/\s/g, '');
-	}
-
-	_getFilterTitle(filter) {
-		return filter.title.replace(/^_+/, '');
 	}
 
 	_getOptionToggleAction(option) {

@@ -23,24 +23,24 @@ window.D2LHMFilterTestFixtures = {
 					rel: ['item', 'https://api.brightspace.com/rels/filters/collection'],
 					href: 'data/category1.json',
 					class:['collection', 'filters', 'filter-category-1'],
-					title: '_By Filter Category 1'
+					title: 'By Filter Category 1'
 				}, {
 					rel: ['item', 'https://api.brightspace.com/rels/filters/collection'],
 					href: 'data/category2.json',
 					class: ['collection', 'filters', 'filter-category-2'],
-					title: '_By Filter Category 2'
+					title: 'By Filter Category 2'
 				}, {
 					rel: ['item', 'https://api.brightspace.com/rels/filters/collection'],
 					href: 'data/category3.json',
 					class: ['collection', 'filters', 'filter-category-3'],
-					title: '_By Filter Category 3'
+					title: 'By Filter Category 3'
 				}
 			]
 		};
 	},
 	get toggled_filters_category_1_result() {
 		return {
-			title: '_By Filter Category 1',
+			title: 'By Filter Category 1',
 			class: ['collection', 'filters', 'filter-category-1'],
 			actions: [
 				{
@@ -84,7 +84,7 @@ window.D2LHMFilterTestFixtures = {
 	},
 	get toggled_filters_category_2_result() {
 		return {
-			title: '_By Filter Category 2',
+			title: 'By Filter Category 2',
 			class: ['collection', 'filters', 'filter-category-2'],
 			actions: [
 				{
