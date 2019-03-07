@@ -1,6 +1,4 @@
-window.testFixtures = window.testFixtures || {};
-
-Object.assign(window.testFixtures, {
+window.D2LHMFilterTestFixtures = {
 	get toggled_filters_result() {
 		return {
 			class: ['collection-filters'],
@@ -180,4 +178,4 @@ Object.assign(window.testFixtures, {
 			]
 		};
 	}
-});
+};
