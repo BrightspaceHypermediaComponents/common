@@ -1,4 +1,3 @@
-//import sinon from 'sinon/pkg/sinon-esm.js';
 (function() {
 	let filter;
 	let expectedFilters = [];
