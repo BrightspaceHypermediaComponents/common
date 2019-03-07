@@ -115,7 +115,7 @@
 			filter.categoryWhitelist = whiteList;
 			await loadFilters('data/filters.json');
 			assert.equal(whiteList.length, filter._filters.length);
-			expectedFilters = expectedFilters.filter(ef => whiteList.includes(ef.key));
+			expectedFilters = expectedFilters.filter(ef => whiteList.indexOf(ef.key) >= 0);
 			expectedFilters = expectedFilters.sort((a, b) => {
 				var a1 = whiteList.indexOf(a.key);
 				var b1 = whiteList.indexOf(b.key);
