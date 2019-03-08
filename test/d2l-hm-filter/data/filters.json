@@ -1,0 +1,37 @@
+{
+	"class":["collection-filters"],
+	"actions":[
+		{
+			"name":"clear",
+			"href":"data/filters.json",
+			"method":"GET",
+			"type":"application/x-www-form-urlencoded",
+			"fields":[
+				{
+					"name":"existingState",
+					"class":["base64","json"],
+					"type":"hidden",
+					"value":""
+				}
+			]
+		}
+	],
+	"entities":[
+		{
+			"rel":["item","https://api.brightspace.com/rels/filters/collection"],
+			"href":"data/category1.json",
+			"class":["collection","filters","filter-category-1"],
+			"title":"By Filter Category 1"
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filters/collection"],
+			"href":"data/category2.json",
+			"class":["collection","filters","filter-category-2"],
+			"title":"By Filter Category 2"
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filters/collection"],
+			"href":"data/category3.json",
+			"class":["collection","filters","filter-category-3"],
+			"title":"By Filter Category 3"
+		}
+	]
+}
