@@ -407,8 +407,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	/* Helper needed until we have fixed the functionality in SirenActionBehavior
-	* Specifically, th getSirenFields function is broken: https://github.com/Brightspace/polymer-siren-behaviors/blob/master/store/siren-action-behavior.js#L14
-	* It does not grab the query parameters correctly, and duplicate parameters and fields should nto be included
+	* Specifically, the getSirenFields function is broken: https://github.com/Brightspace/polymer-siren-behaviors/blob/master/store/siren-action-behavior.js#L14
+	* It does not grab the query parameters correctly, and duplicate parameters and fields should not be included
 	*/
 	_performSirenActionWithQueryParams(action) {
 		const url = new URL(action.href, window.location.origin);
