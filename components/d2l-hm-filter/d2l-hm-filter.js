@@ -106,7 +106,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _loadFilters(entity) {
-		if (!entity || (this._filters && this._filters.length)) {
+		if (!entity) {
 			return Promise.resolve();
 		}
 		try {
@@ -260,7 +260,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				if (this._filterShouldBeCleared(f, activatedOptions)) {
 					let cleared;
 					try {
-						cleared = await this.performSirenAction(f.clearAction);
+						cleared = await this._performSirenActionWithQueryParams(f.clearAction);
 					} catch (err) {
 						Promise.reject(err);
 					}
@@ -297,7 +297,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	async _apply(entity) {
 		try {
-			return await this.performSirenAction(this._getAction(entity, 'apply'));
+			return await this._performSirenActionWithQueryParams(this._getAction(entity, 'apply'));
 		} catch (err) {
 			return Promise.reject(err);
 		}
@@ -306,7 +306,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _toggleOption(filter, option) {
 		let result = null;
 		try {
-			result = await this.performSirenAction(option.toggleAction);
+			result = await this._performSirenActionWithQueryParams(option.toggleAction);
 			option.selected = !option.selected;
 			this._updateToggleActions(result, filter);
 		} catch (err) {
@@ -318,7 +318,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _clearAllOptions() {
 		let cleared;
 		try {
-			cleared = await this.performSirenAction(this._clearAction);
+			cleared = await this._performSirenActionWithQueryParams(this._clearAction);
 		} catch (err) {
 			return Promise.reject(err);
 		}
@@ -404,6 +404,26 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				}
 			)
 		);
+	}
+
+	/* Helper needed until we have fixed the functionality in SirenActionBehavior
+	* Specifically, th getSirenFields function is broken: https://github.com/Brightspace/polymer-siren-behaviors/blob/master/store/siren-action-behavior.js#L14
+	* It does not grab the query parameters correctly, and duplicate parameters and fields should nto be included
+	*/
+	_performSirenActionWithQueryParams(action) {
+		const url = new URL(action.href, window.location.origin);
+
+		if (!action.fields) {
+			action.fields = [];
+		}
+
+		url.searchParams.forEach(function(value, key) {
+			if (!action.fields.find(x => x.name === key)) {
+				action.fields.push({ name: key, value: value, type: 'hidden' });
+			}
+		});
+
+		return this.performSirenAction(action);
 	}
 }
 
