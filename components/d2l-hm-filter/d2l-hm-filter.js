@@ -418,7 +418,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 
 		url.searchParams.forEach(function(value, key) {
-			if (!action.fields.find(x => x.name === key)) {
+			if (!action.fields.filter(x => x.name === key)[0]) {
 				action.fields.push({ name: key, value: value, type: 'hidden' });
 			}
 		});
