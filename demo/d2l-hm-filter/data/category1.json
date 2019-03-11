@@ -36,6 +36,9 @@
 			"rel":["item","https://api.brightspace.com/rels/filter"],
 			"title":"Option 1",
 			"class":["filter","off"],
+			"properties": {
+				"filter": 1
+			},
 			"actions":[
 				{
 					"name":"add-filter",
@@ -55,6 +58,9 @@
 			"rel":["item","https://api.brightspace.com/rels/filter"],
 			"title":"Option 2",
 			"class":["filter","off"],
+			"properties": {
+				"filter": 2
+			},
 			"actions":[
 				{
 					"name":"add-filter",
@@ -74,6 +80,9 @@
 			"rel":["item","https://api.brightspace.com/rels/filter"],
 			"title":"Option 3",
 			"class":["filter","off"],
+			"properties": {
+				"filter": 3
+			},
 			"actions":[
 				{
 					"name":"add-filter",
