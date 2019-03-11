@@ -412,18 +412,29 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	*/
 	_performSirenActionWithQueryParams(action) {
 		const url = new URL(action.href, window.location.origin);
+		const searchParams = this._parseQuery(url.search);
 
 		if (!action.fields) {
 			action.fields = [];
 		}
 
-		url.searchParams.forEach(function(value, key) {
-			if (!this._findInArray(action.fields, f => f.name === key)) {
-				action.fields.push({ name: key, value: value, type: 'hidden' });
+		searchParams.forEach(function(value) {
+			if (!this._findInArray(action.fields, f => f.name === value[0])) {
+				action.fields.push({ name: value[0], value: value[1], type: 'hidden' });
 			}
 		}.bind(this));
 
 		return this.performSirenAction(action);
+	}
+
+	_parseQuery(queryString) {
+		var query = [];
+		var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+		for (var i = 0; i < pairs.length; i++) {
+			var pair = pairs[i].split('=');
+			query[i] = [decodeURIComponent(pair[0]), decodeURIComponent(pair[1] || '')];
+		}
+		return query;
 	}
 }
 
