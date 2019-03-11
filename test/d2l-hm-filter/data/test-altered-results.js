@@ -63,6 +63,9 @@ window.D2LHMFilterTestFixtures = {
 					rel: ['item', 'https://api.brightspace.com/rels/filter'],
 					title: 'Option 1',
 					class: ['filter', 'on'],
+					properties: {
+						filter: 1
+					},
 					actions: [
 						{
 							name: 'remove-filter',
@@ -107,6 +110,9 @@ window.D2LHMFilterTestFixtures = {
 					rel: ['item', 'https://api.brightspace.com/rels/filter'],
 					title: 'Option 1',
 					class: ['filter', 'on'],
+					properties: {
+						filter: 1
+					},
 					actions: [
 						{
 							name: 'remove-filter',

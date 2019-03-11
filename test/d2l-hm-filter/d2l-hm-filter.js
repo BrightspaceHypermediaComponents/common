@@ -56,7 +56,7 @@
 		expectedFilters[f].options = [
 			{
 				title: 'Option 1',
-				key: 'Option1',
+				key: 1,
 				categoryKey: expectedFilters[f].key,
 				selected: false,
 				toggleAction: {
