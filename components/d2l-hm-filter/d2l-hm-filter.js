@@ -429,10 +429,12 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	_parseQuery(queryString) {
 		var query = [];
-		var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
-		for (var i = 0; i < pairs.length; i++) {
-			var pair = pairs[i].split('=');
-			query[i] = [decodeURIComponent(pair[0]), decodeURIComponent(pair[1] || '')];
+		if (queryString) {
+			var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+			for (var i = 0; i < pairs.length; i++) {
+				var pair = pairs[i].split('=');
+				query[i] = [pair[0], pair[1] || ''];
+			}
 		}
 		return query;
 	}

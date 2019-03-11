@@ -181,5 +181,99 @@
 			fetchStub.restore();
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
+
+		/* Tests for temporary _performSirenActionWithQueryParams workaround */
+		test('when calling performSirenAction with no query params and no fields, the fields are empty', () => {
+			const action = {
+				href : 'http://127.0.0.1/',
+				name: 'apply',
+				type: 'application/x-www-form-urlencoded',
+				method: 'GET'
+			};
+
+			const stub = sinon.stub(filter, 'performSirenAction', function(passedAction) {
+				assert.deepEqual(action, passedAction);
+			});
+			filter._performSirenActionWithQueryParams(action);
+			sinon.assert.calledWith(stub, action);
+		});
+		test('when calling performSirenAction with no query params, the fields are not modified', () => {
+
+			const action = {
+				href : 'http://127.0.0.1/',
+				name: 'apply',
+				type: 'application/x-www-form-urlencoded',
+				method: 'GET',
+				fields : [
+					{
+						type: 'hidden',
+						name : 'existingField',
+						value: 'existingValue'
+					}]
+			};
+
+			const stub = sinon.stub(filter, 'performSirenAction', function(passedAction) {
+				assert.deepEqual(action, passedAction);
+			});
+			filter._performSirenActionWithQueryParams(action);
+			sinon.assert.calledWith(stub, action);
+		});
+		test('when calling performSirenAction with query params, the query params are added as fields', () => {
+
+			const action = {
+				href : 'http://127.0.0.1?testname=testvalue&anothertestname=anothertestvalue',
+				name: 'apply',
+				type: 'application/x-www-form-urlencoded',
+				method: 'GET',
+				fields : [
+					{
+						type: 'hidden',
+						name : 'existingField',
+						value: 'existingValue'
+					}]
+			};
+
+			const expectedAction = {
+				href : 'http://127.0.0.1?testname=testvalue&anothertestname=anothertestvalue',
+				name: 'apply',
+				type: 'application/x-www-form-urlencoded',
+				method: 'GET',
+				fields : [
+					{
+						type: 'hidden',
+						name : 'existingField',
+						value: 'existingValue'
+					},
+					{
+						type: 'hidden',
+						name : 'testname',
+						value: 'testvalue'
+					},
+					{
+						type: 'hidden',
+						name : 'anothertestname',
+						value: 'anothertestvalue'
+					}]
+			};
+
+			const stub = sinon.stub(filter, 'performSirenAction', function(passedAction) {
+				assert.deepEqual(expectedAction, passedAction);
+			});
+			filter._performSirenActionWithQueryParams(action);
+			sinon.assert.calledWith(stub, action);
+		});
+		test('_parseQuery returns expected results', () => {
+			assert.deepEqual(filter._parseQuery(), []);
+			assert.deepEqual(filter._parseQuery(''), []);
+			assert.deepEqual(filter._parseQuery(null), []);
+			assert.deepEqual(filter._parseQuery('?key'), [['key', '']]);
+			assert.deepEqual(filter._parseQuery('key'), [['key', '']]);
+			assert.deepEqual(filter._parseQuery('?key=value'), [['key', 'value']]);
+			assert.deepEqual(filter._parseQuery('key=value'), [['key', 'value']]);
+			assert.deepEqual(filter._parseQuery('?key=value&anotherKey'), [['key', 'value'], ['anotherKey', '']]);
+			assert.deepEqual(filter._parseQuery('key=value&anotherKey'), [['key', 'value'], ['anotherKey', '']]);
+			assert.deepEqual(filter._parseQuery('?key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
+			assert.deepEqual(filter._parseQuery('key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
+		});
 	});
 })();
