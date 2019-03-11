@@ -232,7 +232,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			return filter.entity.entities.map(o => {
 				return {
 					title: o.title,
-					key: this._getOptionKey(o),
+					key: o.properties.filter,
 					categoryKey: this._getFilterKeyFromClasses(filter.entity.class),
 					selected: this._getOptionStatusFromClasses(o.class),
 					toggleAction: this._getOptionToggleAction(o)
@@ -241,10 +241,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 
 		return [];
-	}
-
-	_getOptionKey(option) {
-		return option.title.replace(/\s/g, '');
 	}
 
 	_getOptionToggleAction(option) {
@@ -347,7 +343,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_getToggleFilterAction(filterEntity, option) {
-		const ent = this._findInArray(filterEntity.entities, e => this._getOptionKey(e) === option.key);
+		const ent = this._findInArray(filterEntity.entities, e => e.properties.filter === option.key);
 		return this._getOptionToggleAction(ent);
 	}
 
