@@ -57,6 +57,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			_dropdown: {
 				type: Object,
 				value: {}
+			},
+			_selectedCategory: {
+				type: String
 			}
 		};
 	}
@@ -172,12 +175,24 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				}
 			}
 			if (filters && filters.length) {
+				var selectedFilterIndex = this._selectedCategory ? this._getFilterIndexFromKey(filters, this._selectedCategory) : 0;
+
 				// The other filters are lazily loaded when their tab is opened for the first time.
-				filters[0].options = await this._getFilterOptions(filters[0].href);
-				filters[0].loaded = true;
+				filters[selectedFilterIndex].options = await this._getFilterOptions(filters[selectedFilterIndex].href);
+				filters[selectedFilterIndex].loaded = true;
+
 				this._filters = filters;
 			}
 		}
+	}
+
+	_getFilterIndexFromKey(filters, key) {
+		for (var i = 0 ; i < filters.length; i++) {
+			if (filters[i].key === key) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	_getFilterKeyFromClasses(classes) {
@@ -214,6 +229,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	async _handleSelectedFilterChanged(e) {
 		const filter = this._findInArray(this._filters, f => f.key === e.detail.selectedKey);
+		this._selectedCategory = e.detail.selectedKey;
 		if (!filter.loaded) {
 			filter.options = await this._getFilterOptions(filter.href);
 			this._populateFilterDropdown(filter);
