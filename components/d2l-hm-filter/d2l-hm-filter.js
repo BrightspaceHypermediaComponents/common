@@ -149,17 +149,16 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	_parseEntityToFilter(entity, numApplied) {
 		if (entity) {
-			const result = {
-				key: this._getCategoryKeyFromHref(entity.href),
-				startingApplied: 0,
+			const key = this._getCategoryKeyFromHref(entity.href);
+			return {
+				key: key,
+				startingApplied: numApplied[key] || 0,
 				title: entity.title,
 				href: entity.href,
 				loaded: false,
 				clearAction: this._getAction(entity, 'clear'),
 				options: []
 			};
-			result.startingApplied = numApplied[result.key] || 0;
-			return result;
 		}
 	}
 
