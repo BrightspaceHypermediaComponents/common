@@ -58,6 +58,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			_dropdown: {
 				type: Object,
 				value: {}
+			},
+			_selectedCategory: {
+				type: String
 			}
 		};
 	}
@@ -107,7 +110,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _loadFilters(entity) {
-		if (!entity || (this._filters && this._filters.length)) {
+		if (!entity) {
 			return Promise.resolve();
 		}
 		try {
@@ -176,9 +179,12 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				}
 			}
 			if (filters && filters.length) {
+				var selectedFilterIndex = this._selectedCategory ? this._getFilterIndexFromKey(filters, this._selectedCategory) : 0;
+
 				// The other filters are lazily loaded when their tab is opened for the first time.
-				filters[0].options = await this._getFilterOptions(filters[0].href, filters[0].key);
-				filters[0].loaded = true;
+				filters[selectedFilterIndex].options = await this._getFilterOptions(filters[selectedFilterIndex].href, filters[selectedFilterIndex].key);
+				filters[selectedFilterIndex].loaded = true;
+
 				this._filters = filters;
 			}
 		}
@@ -200,6 +206,15 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				return;
 			}
 		}
+	}
+
+	_getFilterIndexFromKey(filters, key) {
+		for (var i = 0 ; i < filters.length; i++) {
+			if (filters[i].key === key) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	_getOptionStatusFromClasses(classes) {
@@ -232,6 +247,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	async _handleSelectedFilterChanged(e) {
 		const filter = this._findInArray(this._filters, f => f.key === e.detail.selectedKey);
+		this._selectedCategory = e.detail.selectedKey;
 		if (!filter.loaded) {
 			filter.options = await this._getFilterOptions(filter.href, filter.key);
 			this._populateFilterDropdown(filter);
@@ -274,7 +290,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				if (this._filterShouldBeCleared(f, activatedOptions)) {
 					let cleared;
 					try {
-						cleared = await this.performSirenAction(f.clearAction);
+						cleared = await this._performSirenActionWithQueryParams(f.clearAction);
 					} catch (err) {
 						Promise.reject(err);
 					}
@@ -311,7 +327,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	async _apply(entity) {
 		try {
-			return await this.performSirenAction(this._getAction(entity, 'apply'));
+			return await this._performSirenActionWithQueryParams(this._getAction(entity, 'apply'));
 		} catch (err) {
 			return Promise.reject(err);
 		}
@@ -320,7 +336,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _toggleOption(filter, option) {
 		let result = null;
 		try {
-			result = await this.performSirenAction(option.toggleAction);
+			result = await this._performSirenActionWithQueryParams(option.toggleAction);
 			option.selected = !option.selected;
 			this._updateToggleActions(result, filter);
 		} catch (err) {
@@ -332,7 +348,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _clearAllOptions() {
 		let cleared;
 		try {
-			cleared = await this.performSirenAction(this._clearAction);
+			cleared = await this._performSirenActionWithQueryParams(this._clearAction);
 		} catch (err) {
 			return Promise.reject(err);
 		}
@@ -422,6 +438,39 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				}
 			)
 		);
+	}
+
+	/* Helper needed until we have fixed the functionality in SirenActionBehavior
+	* Specifically, the getSirenFields function is broken: https://github.com/Brightspace/polymer-siren-behaviors/blob/master/store/siren-action-behavior.js#L14
+	* It does not grab the query parameters correctly, and duplicate parameters and fields should not be included
+	*/
+	_performSirenActionWithQueryParams(action) {
+		const url = new URL(action.href, window.location.origin);
+		const searchParams = this._parseQuery(url.search);
+
+		if (!action.fields) {
+			action.fields = [];
+		}
+
+		searchParams.forEach(function(value) {
+			if (!this._findInArray(action.fields, f => f.name === value[0])) {
+				action.fields.push({ name: value[0], value: value[1], type: 'hidden' });
+			}
+		}.bind(this));
+
+		return this.performSirenAction(action);
+	}
+
+	_parseQuery(queryString) {
+		var query = [];
+		if (queryString) {
+			var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+			for (var i = 0; i < pairs.length; i++) {
+				var pair = pairs[i].split('=');
+				query[i] = [pair[0], pair[1] || ''];
+			}
+		}
+		return query;
 	}
 }
 
