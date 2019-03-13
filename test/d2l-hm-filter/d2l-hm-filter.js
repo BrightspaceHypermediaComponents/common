@@ -176,7 +176,7 @@
 			await loadFilters('data/filters.json');
 			const fetchStub = await _toggleOption(0, 0);
 			fetchStub.reset();
-			fetchStub.withArgs(`${window.location.origin}/data/filters.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures.cleared_filters_result));
+			fetchStub.withArgs(`${window.location.origin}/data/filters.json?n=e&pageSize=1000&existingState=`, sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures.cleared_filters_result));
 			await filter._clearAllOptions();
 			fetchStub.restore();
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
@@ -279,6 +279,7 @@
 		test('_appendPageSize appends page size properly', () => {
 			assert.equal(filter._appendPageSize('http://url'), 'http://url?pageSize=1000');
 			assert.equal(filter._appendPageSize('http://url?existingQuery=existing'), 'http://url?existingQuery=existing&pageSize=1000');
+			assert.equal(filter._appendPageSize('http://url?pageSize=xy'), 'http://url?pageSize=xy');
 		});
 	});
 })();
