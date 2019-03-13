@@ -35,6 +35,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				value: [
 					// {
 					// 	key: '',
+					// 	startingApplied: 0,
 					// 	title: '',
 					// 	href: '',
 					// 	loaded: false,
@@ -131,7 +132,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			}.bind(this));
 		} else {
 			this._filters.forEach(function(f) {
-				this._dropdown.addFilterCategory(f.key, f.title);
+				this._dropdown.addFilterCategory(f.key, f.title, f.startingApplied);
 				f.options.forEach(function(o) {
 					this._dropdown.addFilterOption(f.key, o.key, o.title, o.selected);
 				}.bind(this));
@@ -143,16 +144,19 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		return this.categoryWhitelist && this.categoryWhitelist.length;
 	}
 
-	_parseEntityToFilter(entity) {
+	_parseEntityToFilter(entity, numApplied) {
 		if (entity) {
-			return {
-				key: this._getFilterKeyFromClasses(entity.class),
+			const result = {
+				key: this._getCategoryKeyFromHref(entity.href),
+				startingApplied: 0,
 				title: entity.title,
 				href: entity.href,
 				loaded: false,
 				clearAction: this._getAction(entity, 'clear'),
 				options: []
 			};
+			result.startingApplied = numApplied[result.key] || 0;
+			return result;
 		}
 	}
 
@@ -161,27 +165,41 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			const filters = [];
 			if (this._shouldApplyWhitelist()) {
 				this.categoryWhitelist.forEach(cw => {
-					const found = this._findInArray(entity.entities, e => this._getFilterKeyFromClasses(e.class) === cw);
+					const found = this._findInArray(entity.entities, e => e.href.indexOf(cw) >= 0);
 					if (found) {
-						filters.push(this._parseEntityToFilter(found));
+						filters.push(this._parseEntityToFilter(found, entity.properties.applied));
 					}
 				});
 			} else {
 				for (let i = 0; i < entity.entities.length; i++) {
-					filters.push(this._parseEntityToFilter(entity.entities[i]));
+					filters.push(this._parseEntityToFilter(entity.entities[i], entity.properties.applied));
 				}
 			}
 			if (filters && filters.length) {
 				// The other filters are lazily loaded when their tab is opened for the first time.
-				filters[0].options = await this._getFilterOptions(filters[0].href);
+				filters[0].options = await this._getFilterOptions(filters[0].href, filters[0].key);
 				filters[0].loaded = true;
 				this._filters = filters;
 			}
 		}
 	}
 
-	_getFilterKeyFromClasses(classes) {
-		return this._findInArray(classes, c => c !== 'collection' && c !== 'filters');
+	_getCategoryKeyFromHref(href) {
+		const keyRegex = /\/([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})(\/?\?{0}|\/?\?{1}.*|\..*)$/i;
+		const match = keyRegex.exec(href);
+		if (match && match.length >= 2) {
+			return match[1];
+		}
+	}
+
+	_setCategoryKeyAndStartingApplied(category, numApplied) {
+		for (const applied in numApplied) {
+			if (category.href.indexOf(applied) >= 0) {
+				category.key = applied;
+				category.startingApplied = numApplied[applied];
+				return;
+			}
+		}
 	}
 
 	_getOptionStatusFromClasses(classes) {
@@ -215,7 +233,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _handleSelectedFilterChanged(e) {
 		const filter = this._findInArray(this._filters, f => f.key === e.detail.selectedKey);
 		if (!filter.loaded) {
-			filter.options = await this._getFilterOptions(filter.href);
+			filter.options = await this._getFilterOptions(filter.href, filter.key);
 			this._populateFilterDropdown(filter);
 			filter.loaded = true;
 		}
@@ -226,14 +244,14 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		this._dispatchFiltersUpdated(result);
 	}
 
-	async _getFilterOptions(href) {
+	async _getFilterOptions(href, cKey) {
 		const filter = await this._fetchFromStore(href);
 		if (filter && filter.entity && filter.entity.entities) {
 			return filter.entity.entities.map(o => {
 				return {
 					title: o.title,
 					key: o.properties.filter,
-					categoryKey: this._getFilterKeyFromClasses(filter.entity.class),
+					categoryKey: cKey,
 					selected: this._getOptionStatusFromClasses(o.class),
 					toggleAction: this._getOptionToggleAction(o)
 				};
@@ -319,11 +337,11 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			return Promise.reject(err);
 		}
 		this._clearAction = this._getAction(cleared, 'clear');
-		for (let i = 0; i < cleared.entities.length; i++) {
-			const fKey = this._getFilterKeyFromClasses(cleared.entities[i].class);
-			const filter = this._findInArray(this._filters, f => f.key === fKey);
+		for (const cKey in cleared.properties.applied) {
+			const filter = this._findInArray(this._filters, f => f.key === cKey);
 			if (filter) {
-				const filterEntity = await this._fetchFromStore(cleared.entities[i].href);
+				const href = this._findInArray(cleared.entities, e => e.href.includes(cKey)).href;
+				const filterEntity = await this._fetchFromStore(href);
 				filter.clearAction = this._getAction(filterEntity, 'clear');
 				this._updateToggleActions(filterEntity.entity, filter);
 			}
@@ -377,10 +395,14 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	_getTotalSelectedFilters() {
 		let result = 0;
 		for (let i = 0; i < this._filters.length; i++) {
-			for (let j = 0; j < this._filters[i].options.length; j++) {
-				if (this._filters[i].options[j].selected) {
-					result++;
+			if (this._filters[i].options.length) {
+				for (let j = 0; j < this._filters[i].options.length; j++) {
+					if (this._filters[i].options[j].selected) {
+						result++;
+					}
 				}
+			} else {
+				result += this._filters[i].startingApplied;
 			}
 		}
 		return result;

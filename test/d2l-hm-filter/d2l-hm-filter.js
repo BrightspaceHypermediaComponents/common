@@ -44,10 +44,15 @@
 		});
 	}
 
+	function _getKeyGuid(cat) {
+		const seg = cat.toString().repeat(4);
+		return `${seg.repeat(2)}-${seg}-${seg}-${seg}-${seg.repeat(3)}`;
+	}
+
 	async function _toggleOption(f, o, fetch) {
 		const result = fetch || sinon.stub(window.d2lfetch, 'fetch');
 		result.withArgs(sinon.match('/data/filters.json'), sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures.toggled_filters_result));
-		result.withArgs(sinon.match(`/data/category${f + 1}.json`), sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures[`toggled_filters_category_${f + 1}_result`]));
+		result.withArgs(sinon.match(`/data/${_getKeyGuid(f + 1)}.json`), sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures[`toggled_filters_category_${f + 1}_result`]));
 		await filter._toggleOption(filter._filters[f], filter._filters[f].options[o]);
 		return result;
 	}
@@ -56,7 +61,7 @@
 		expectedFilters[f].options = [
 			{
 				title: 'Option 1',
-				key: 1,
+				key: '1',
 				categoryKey: expectedFilters[f].key,
 				selected: false,
 				toggleAction: {
@@ -80,10 +85,12 @@
 	function _resetExpected() {
 		expectedFilters = [];
 		for (let i = 1; i <= 3; i++) {
+			const key = _getKeyGuid(i);
 			expectedFilters.push({
-				key: `filter-category-${i}`,
+				key: key,
 				title: `By Filter Category ${i}`,
-				href: `data/category${i}.json`,
+				href: `data/${key}.json`,
+				startingApplied: 0,
 				loaded: false,
 				clearAction: null,
 				options: []
@@ -110,7 +117,7 @@
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
 		test('whitelist filters and sorts available filters', async() => {
-			const whiteList = ['filter-category-3', 'filter-category-1'];
+			const whiteList = ['33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111'];
 			filter.categoryWhitelist = whiteList;
 			await loadFilters('data/filters.json');
 			assert.equal(whiteList.length, filter._filters.length);

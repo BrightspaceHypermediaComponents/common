@@ -4,7 +4,7 @@
 	"actions":[
 		{
 			"name":"clear",
-			"href":"components/d2l-common/demo/d2l-hm-filter/data/category2.json",
+			"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 			"method":"GET",
 			"type":"application/x-www-form-urlencoded",
 			"fields":[
@@ -18,7 +18,7 @@
 		},
     {
 			"name": "apply",
-			"href":"components/d2l-common/demo/d2l-hm-filter/data/category2.json",
+			"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 			"fields": [
 				{
 					"class": [
@@ -37,12 +37,12 @@
 			"title":"Option 1",
 			"class":["filter","off"],
 			"properties": {
-				"filter": 1
+				"filter": "1"
 			},
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"components/d2l-common/demo/d2l-hm-filter/data/category2.json",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[
@@ -59,12 +59,12 @@
 			"title":"Option 2",
 			"class":["filter","off"],
 			"properties": {
-				"filter": 2
+				"filter": "2"
 			},
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"components/d2l-common/demo/d2l-hm-filter/data/category2.json",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[
@@ -81,12 +81,12 @@
 			"title":"Option 3",
 			"class":["filter","off"],
 			"properties": {
-				"filter": 3
+				"filter": "3"
 			},
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"components/d2l-common/demo/d2l-hm-filter/data/category2.json",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[
@@ -103,12 +103,12 @@
 			"title":"Option 4",
 			"class":["filter","off"],
 			"properties": {
-				"filter": 4
+				"filter": "4"
 			},
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"components/d2l-common/demo/d2l-hm-filter/data/category2.json",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[
@@ -125,12 +125,12 @@
 			"title":"Option 5",
 			"class":["filter","off"],
 			"properties": {
-				"filter": 5
+				"filter": "5"
 			},
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"components/d2l-common/demo/d2l-hm-filter/data/category2.json",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[
@@ -147,12 +147,12 @@
 			"title":"Option 6",
 			"class":["filter","off"],
 			"properties": {
-				"filter": 6
+				"filter": "6"
 			},
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"components/d2l-common/demo/d2l-hm-filter/data/category2.json",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[
@@ -169,12 +169,12 @@
 			"title":"Option 7",
 			"class":["filter","off"],
 			"properties": {
-				"filter": 7
+				"filter": "7"
 			},
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"components/d2l-common/demo/d2l-hm-filter/data/category2.json",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[

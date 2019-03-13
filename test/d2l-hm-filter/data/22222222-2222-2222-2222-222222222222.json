@@ -1,10 +1,10 @@
 {
-	"title":"By Filter Category 1",
-	"class":["collection","filters","filter-category-1"],
+	"title":"By Filter Category 2",
+	"class":["collection","filters","filter-category-2"],
 	"actions":[
 		{
 			"name":"clear",
-			"href":"data/category1.json",
+			"href":"data/22222222-2222-2222-2222-222222222222.json",
 			"method":"GET",
 			"type":"application/x-www-form-urlencoded",
 			"fields":[
@@ -23,12 +23,12 @@
 			"title":"Option 1",
 			"class":["filter","off"],
 			"properties": {
-				"filter": 1
+				"filter": "1"
 			},
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"data/category1.json",
+					"href":"data/22222222-2222-2222-2222-222222222222.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[

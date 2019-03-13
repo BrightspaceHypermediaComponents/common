@@ -18,20 +18,27 @@ window.D2LHMFilterTestFixtures = {
 					]
 				}
 			],
+			properties: {
+				applied: {
+					'11111111-1111-1111-1111-111111111111': 1,
+					'22222222-2222-2222-2222-222222222222': 0,
+					'33333333-3333-3333-3333-333333333333': 0
+				}
+			},
 			entities:[
 				{
 					rel: ['item', 'https://api.brightspace.com/rels/filters/collection'],
-					href: 'data/category1.json',
+					href: 'data/11111111-1111-1111-1111-111111111111.json',
 					class:['collection', 'filters', 'filter-category-1'],
 					title: 'By Filter Category 1'
 				}, {
 					rel: ['item', 'https://api.brightspace.com/rels/filters/collection'],
-					href: 'data/category2.json',
+					href: 'data/22222222-2222-2222-2222-222222222222.json',
 					class: ['collection', 'filters', 'filter-category-2'],
 					title: 'By Filter Category 2'
 				}, {
 					rel: ['item', 'https://api.brightspace.com/rels/filters/collection'],
-					href: 'data/category3.json',
+					href: 'data/33333333-3333-3333-3333-333333333333.json',
 					class: ['collection', 'filters', 'filter-category-3'],
 					title: 'By Filter Category 3'
 				}
@@ -45,7 +52,7 @@ window.D2LHMFilterTestFixtures = {
 			actions: [
 				{
 					name: 'clear',
-					href: 'data/category1.json',
+					href: 'data/11111111-1111-1111-1111-111111111111.json',
 					method: 'GET',
 					type: 'application/x-www-form-urlencoded',
 					fields: [
@@ -64,12 +71,12 @@ window.D2LHMFilterTestFixtures = {
 					title: 'Option 1',
 					class: ['filter', 'on'],
 					properties: {
-						filter: 1
+						filter: '1'
 					},
 					actions: [
 						{
 							name: 'remove-filter',
-							href: 'data/category1.json',
+							href: 'data/11111111-1111-1111-1111-111111111111.json',
 							method: 'GET',
 							type: 'application/x-www-form-urlencoded',
 							fields: [
@@ -92,7 +99,7 @@ window.D2LHMFilterTestFixtures = {
 			actions: [
 				{
 					name: 'clear',
-					href: 'data/category2.json',
+					href: 'data/22222222-2222-2222-2222-222222222222.json',
 					method: 'GET',
 					type: 'application/x-www-form-urlencoded',
 					fields: [
@@ -111,12 +118,12 @@ window.D2LHMFilterTestFixtures = {
 					title: 'Option 1',
 					class: ['filter', 'on'],
 					properties: {
-						filter: 1
+						filter: '1'
 					},
 					actions: [
 						{
 							name: 'remove-filter',
-							href: 'data/category2.json',
+							href: 'data/22222222-2222-2222-2222-222222222222.json',
 							method: 'GET',
 							type: 'application/x-www-form-urlencoded',
 							fields: [
@@ -164,20 +171,27 @@ window.D2LHMFilterTestFixtures = {
 					]
 				}
 			],
+			properties: {
+				applied: {
+					'11111111-1111-1111-1111-111111111111': 0,
+					'22222222-2222-2222-2222-222222222222': 0,
+					'33333333-3333-3333-3333-333333333333': 0
+				}
+			},
 			entities:[
 				{
 					rel: ['item', 'https://api.brightspace.com/rels/filters/collection'],
-					href: 'data/category1.json',
+					href: 'data/11111111-1111-1111-1111-111111111111.json',
 					class:['collection', 'filters', 'filter-category-1'],
 					title: '_By Filter Category 1'
 				}, {
 					rel: ['item', 'https://api.brightspace.com/rels/filters/collection'],
-					href: 'data/category2.json',
+					href: 'data/22222222-2222-2222-2222-222222222222.json',
 					class: ['collection', 'filters', 'filter-category-2'],
 					title: '_By Filter Category 2'
 				}, {
 					rel: ['item', 'https://api.brightspace.com/rels/filters/collection'],
-					href: 'data/category3.json',
+					href: 'data/33333333-3333-3333-3333-333333333333.json',
 					class: ['collection', 'filters', 'filter-category-3'],
 					title: '_By Filter Category 3'
 				}

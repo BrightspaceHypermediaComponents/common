@@ -4,7 +4,7 @@
 	"actions":[
 		{
 			"name":"clear",
-			"href":"data/category3.json",
+			"href":"data/33333333-3333-3333-3333-333333333333.json",
 			"method":"GET",
 			"type":"application/x-www-form-urlencoded",
 			"fields":[
@@ -23,12 +23,12 @@
 			"title":"Option 1",
 			"class":["filter","off"],
 			"properties": {
-				"filter": 1
+				"filter": "1"
 			},
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"data/category3.json",
+					"href":"data/33333333-3333-3333-3333-333333333333.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[
