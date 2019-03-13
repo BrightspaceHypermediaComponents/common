@@ -245,7 +245,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _getFilterOptions(href) {
 		const hrefWithPageSize = this._appendPageSize(href);
 
-		const filter = await this._fetchFromStore(href);
+		const filter = await this._fetchFromStore(hrefWithPageSize);
 		if (filter && filter.entity && filter.entity.entities) {
 			return filter.entity.entities.map(o => {
 				return {

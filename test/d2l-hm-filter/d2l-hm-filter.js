@@ -173,10 +173,12 @@
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
 		test('clearing all filters works correctly', async() => {
+			var appendStub = sinon.stub(filter, '_appendPageSize');
+			appendStub.returns('data/category1.json');
 			await loadFilters('data/filters.json');
 			const fetchStub = await _toggleOption(0, 0);
 			fetchStub.reset();
-			fetchStub.withArgs(`${window.location.origin}/data/filters.json?n=e&pageSize=1000&existingState=`, sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures.cleared_filters_result));
+			fetchStub.withArgs(`${window.location.origin}/data/filters.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures.cleared_filters_result));
 			await filter._clearAllOptions();
 			fetchStub.restore();
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
