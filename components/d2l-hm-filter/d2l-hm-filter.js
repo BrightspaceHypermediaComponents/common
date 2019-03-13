@@ -243,7 +243,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _getFilterOptions(href) {
-		const filter = await this._fetchFromStore(href);
+		const hrefWithPageSize = this._appendPageSize(href);
+
+		const filter = await this._fetchFromStore(hrefWithPageSize);
 		if (filter && filter.entity && filter.entity.entities) {
 			return filter.entity.entities.map(o => {
 				return {
@@ -449,6 +451,16 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			}
 		}
 		return query;
+	}
+
+	_appendPageSize(href) {
+		let separator = '?';
+
+		if (href.indexOf('?') > -1) {
+			separator = '&';
+		}
+
+		return href + separator + 'pageSize=1000';
 	}
 }
 

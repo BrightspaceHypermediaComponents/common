@@ -275,5 +275,10 @@
 			assert.deepEqual(filter._parseQuery('?key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
 			assert.deepEqual(filter._parseQuery('key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
 		});
+
+		test('_appendPageSize appends page size properly', () => {
+			assert.equal(filter._appendPageSize('http://url'), 'http://url?pageSize=1000');
+			assert.equal(filter._appendPageSize('http://url?existingQuery=existing'), 'http://url?existingQuery=existing&pageSize=1000');
+		});
 	});
 })();
