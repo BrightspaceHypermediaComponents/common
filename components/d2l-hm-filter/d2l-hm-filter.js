@@ -342,13 +342,13 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			return Promise.reject(err);
 		}
 		this._clearAction = this._getAction(cleared, 'clear');
-		for (const cKey in cleared.properties.applied) {
-			const filter = this._findInArray(this._filters, f => f.key === cKey);
-			if (filter) {
-				const href = this._findInArray(cleared.entities, e => e.href.includes(cKey)).href;
-				const filterEntity = await this._fetchFromStore(href);
-				filter.clearAction = this._getAction(filterEntity, 'clear');
-				this._updateToggleActions(filterEntity.entity, filter);
+		for (let i = 0; i < this._filters.length; i++) {
+			const f = this._filters[i];
+			const found = this._findInArray(cleared.entities, e => e.href.includes(f.key));
+			if (found) {
+				const filterEntity = await this._fetchFromStore(found.href);
+				f.clearAction = this._getAction(filterEntity, 'clear');
+				this._updateToggleActions(filterEntity.entity, f);
 			}
 		}
 		this._filters.forEach(f => {
