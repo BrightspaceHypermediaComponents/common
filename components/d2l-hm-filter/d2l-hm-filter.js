@@ -197,16 +197,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
-	_setCategoryKeyAndStartingApplied(category, numApplied) {
-		for (const applied in numApplied) {
-			if (category.href.indexOf(applied) >= 0) {
-				category.key = applied;
-				category.startingApplied = numApplied[applied];
-				return;
-			}
-		}
-	}
-
 	_getFilterIndexFromKey(filters, key) {
 		for (var i = 0 ; i < filters.length; i++) {
 			if (filters[i].key === key) {
