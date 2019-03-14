@@ -52,7 +52,7 @@
 	async function _toggleOption(f, o, fetch) {
 		const result = fetch || sinon.stub(window.d2lfetch, 'fetch');
 		result.withArgs(sinon.match('/data/filters.json'), sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures.toggled_filters_result));
-		result.withArgs(sinon.match(`/data/filters/${_getKeyGuid(f + 1)}.json`), sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures[`toggled_filters_category_${f + 1}_result`]));
+		result.withArgs(sinon.match(`/data/${_getKeyGuid(f + 1)}.json`), sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures[`toggled_filters_category_${f + 1}_result`]));
 		await filter._toggleOption(filter._filters[f], filter._filters[f].options[o]);
 		return result;
 	}
@@ -89,7 +89,7 @@
 			expectedFilters.push({
 				key: key,
 				title: `By Filter Category ${i}`,
-				href: `data/filters/${key}.json`,
+				href: `data/${key}.json`,
 				startingApplied: 0,
 				loaded: false,
 				clearAction: null,
