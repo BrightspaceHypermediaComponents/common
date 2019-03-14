@@ -60,6 +60,10 @@
 			// eslint-disable-next-line no-console
 			console.log('d2l-hm-filter-filters-loaded', e.detail);
 		});
+		document.body.addEventListener('d2l-hm-filter-filters-updating', function(e) {
+			// eslint-disable-next-line no-console
+			console.log('d2l-hm-filter-filters-updating', e);
+		});
 		document.body.addEventListener('d2l-hm-filter-filters-updated', function(e) {
 			// eslint-disable-next-line no-console
 			console.log('d2l-hm-filter-filters-updated', e.detail);
