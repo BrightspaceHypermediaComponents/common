@@ -35,6 +35,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				value: [
 					// {
 					// 	key: '',
+					// 	startingApplied: 0,
 					// 	title: '',
 					// 	href: '',
 					// 	loaded: false,
@@ -134,7 +135,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			}.bind(this));
 		} else {
 			this._filters.forEach(function(f) {
-				this._dropdown.addFilterCategory(f.key, f.title);
+				this._dropdown.addFilterCategory(f.key, f.title, f.startingApplied);
 				f.options.forEach(function(o) {
 					this._dropdown.addFilterOption(f.key, o.key, o.title, o.selected);
 				}.bind(this));
@@ -146,10 +147,12 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		return this.categoryWhitelist && this.categoryWhitelist.length;
 	}
 
-	_parseEntityToFilter(entity) {
+	_parseEntityToFilter(entity, numApplied) {
 		if (entity) {
+			const key = this._getCategoryKeyFromHref(entity.href);
 			return {
-				key: this._getFilterKeyFromClasses(entity.class),
+				key: key,
+				startingApplied: numApplied[key] || 0,
 				title: entity.title,
 				href: entity.href,
 				loaded: false,
@@ -164,24 +167,35 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			const filters = [];
 			if (this._shouldApplyWhitelist()) {
 				this.categoryWhitelist.forEach(cw => {
-					const found = this._findInArray(entity.entities, e => this._getFilterKeyFromClasses(e.class) === cw);
+					const found = this._findInArray(entity.entities, e => e.href.indexOf(cw) >= 0);
 					if (found) {
-						filters.push(this._parseEntityToFilter(found));
+						filters.push(this._parseEntityToFilter(found, entity.properties.applied));
 					}
 				});
 			} else {
 				for (let i = 0; i < entity.entities.length; i++) {
-					filters.push(this._parseEntityToFilter(entity.entities[i]));
+					filters.push(this._parseEntityToFilter(entity.entities[i], entity.properties.applied));
 				}
 			}
 			if (filters && filters.length) {
 				var selectedFilterIndex = this._selectedCategory ? this._getFilterIndexFromKey(filters, this._selectedCategory) : 0;
 
 				// The other filters are lazily loaded when their tab is opened for the first time.
-				filters[selectedFilterIndex].options = await this._getFilterOptions(filters[selectedFilterIndex].href);
+				filters[selectedFilterIndex].options = await this._getFilterOptions(filters[selectedFilterIndex].href, filters[selectedFilterIndex].key);
 				filters[selectedFilterIndex].loaded = true;
 
 				this._filters = filters;
+			}
+		}
+	}
+
+	_getCategoryKeyFromHref(href) {
+		const url = new window.URL(href, 'https://notused.com');
+		if (url) {
+			const keyRegex = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/i;
+			const match = keyRegex.exec(url.pathname);
+			if (match && match.length) {
+				return match[0];
 			}
 		}
 	}
@@ -193,10 +207,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			}
 		}
 		return -1;
-	}
-
-	_getFilterKeyFromClasses(classes) {
-		return this._findInArray(classes, c => c !== 'collection' && c !== 'filters');
 	}
 
 	_getOptionStatusFromClasses(classes) {
@@ -231,7 +241,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		const filter = this._findInArray(this._filters, f => f.key === e.detail.selectedKey);
 		this._selectedCategory = e.detail.selectedKey;
 		if (!filter.loaded) {
-			filter.options = await this._getFilterOptions(filter.href);
+			filter.options = await this._getFilterOptions(filter.href, filter.key);
 			this._populateFilterDropdown(filter);
 			filter.loaded = true;
 		}
@@ -242,14 +252,14 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		this._dispatchFiltersUpdated(result);
 	}
 
-	async _getFilterOptions(href) {
+	async _getFilterOptions(href, cKey) {
 		const filter = await this._fetchFromStore(href);
 		if (filter && filter.entity && filter.entity.entities) {
 			return filter.entity.entities.map(o => {
 				return {
 					title: o.title,
 					key: o.properties.filter,
-					categoryKey: this._getFilterKeyFromClasses(filter.entity.class),
+					categoryKey: cKey,
 					selected: this._getOptionStatusFromClasses(o.class),
 					toggleAction: this._getOptionToggleAction(o)
 				};
@@ -335,13 +345,13 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			return Promise.reject(err);
 		}
 		this._clearAction = this._getAction(cleared, 'clear');
-		for (let i = 0; i < cleared.entities.length; i++) {
-			const fKey = this._getFilterKeyFromClasses(cleared.entities[i].class);
-			const filter = this._findInArray(this._filters, f => f.key === fKey);
-			if (filter) {
-				const filterEntity = await this._fetchFromStore(cleared.entities[i].href);
-				filter.clearAction = this._getAction(filterEntity, 'clear');
-				this._updateToggleActions(filterEntity.entity, filter);
+		for (let i = 0; i < this._filters.length; i++) {
+			const f = this._filters[i];
+			const found = this._findInArray(cleared.entities, e => e.href.indexOf(f.key) > -1);
+			if (found) {
+				const filterEntity = await this._fetchFromStore(found.href);
+				f.clearAction = this._getAction(filterEntity, 'clear');
+				this._updateToggleActions(filterEntity.entity, f);
 			}
 		}
 		this._filters.forEach(f => {
@@ -393,10 +403,14 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	_getTotalSelectedFilters() {
 		let result = 0;
 		for (let i = 0; i < this._filters.length; i++) {
-			for (let j = 0; j < this._filters[i].options.length; j++) {
-				if (this._filters[i].options[j].selected) {
-					result++;
+			if (this._filters[i].options.length) {
+				for (let j = 0; j < this._filters[i].options.length; j++) {
+					if (this._filters[i].options[j].selected) {
+						result++;
+					}
 				}
+			} else {
+				result += this._filters[i].startingApplied;
 			}
 		}
 		return result;
