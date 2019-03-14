@@ -1,0 +1,191 @@
+{
+	"title":"By Filter Category 2",
+	"class":["collection","filters","filter-category-2"],
+	"actions":[
+		{
+			"name":"clear",
+			"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222220.json",
+			"method":"GET",
+			"type":"application/x-www-form-urlencoded",
+			"fields":[
+				{
+					"name":"existingState",
+					"class":["base64","json"],
+					"type":"hidden",
+					"value":""
+				}
+			]
+		},
+    {
+			"name": "apply",
+			"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222220.json",
+			"fields": [
+				{
+					"class": [
+						"base64",
+						"json"
+					],
+					"type": "hidden",
+					"name": "existingState"
+				}
+			]
+		}
+	],
+	"entities":[
+		{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 1",
+			"class":["filter","on"],
+			"properties": {
+				"filter": "1"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222220.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 2",
+			"class":["filter","off"],
+			"properties": {
+				"filter": "2"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222220.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 3",
+			"class":["filter","on"],
+			"properties": {
+				"filter": "3"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222220.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 4",
+			"class":["filter","on"],
+			"properties": {
+				"filter": "4"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222220.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 5",
+			"class":["filter","off"],
+			"properties": {
+				"filter": "5"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222220.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 6",
+			"class":["filter","on"],
+			"properties": {
+				"filter": "6"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222220.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 7",
+			"class":["filter","off"],
+			"properties": {
+				"filter": "7"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222220.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		}
+	]
+}
