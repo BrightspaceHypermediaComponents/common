@@ -45,8 +45,8 @@
 	}
 
 	function _getKeyGuid(cat) {
-		const seg = cat.toString().repeat(4);
-		return `${seg.repeat(2)}-${seg}-${seg}-${seg}-${seg.repeat(3)}`;
+		const seg = cat.toString() + cat.toString() + cat.toString() + cat.toString();
+		return `${seg}${seg}-${seg}-${seg}-${seg}-${seg}${seg}${seg}`;
 	}
 
 	async function _toggleOption(f, o, fetch) {
