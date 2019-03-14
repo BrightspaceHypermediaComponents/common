@@ -4,7 +4,7 @@
 	"actions":[
 		{
 			"name":"clear",
-			"href":"data/11111111-1111-1111-1111-111111111111.json",
+			"href":"data/filters/11111111-1111-1111-1111-111111111111.json",
 			"method":"GET",
 			"type":"application/x-www-form-urlencoded",
 			"fields":[
@@ -28,7 +28,7 @@
 			"actions":[
 				{
 					"name":"add-filter",
-					"href":"data/11111111-1111-1111-1111-111111111111.json",
+					"href":"data/filters/11111111-1111-1111-1111-111111111111.json",
 					"method":"GET",
 					"type":"application/x-www-form-urlencoded",
 					"fields":[

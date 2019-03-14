@@ -190,7 +190,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_getCategoryKeyFromHref(href) {
-		const keyRegex = /\/([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})(\/?\?{0}|\/?\?{1}.*|\..*)$/i;
+		const keyRegex = /filters\/([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})(\/?\?{0}|\/?\?{1}.*|\..*)$/i;
 		const match = keyRegex.exec(href);
 		if (match && match.length >= 2) {
 			return match[1];
