@@ -190,7 +190,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_getCategoryKeyFromHref(href) {
-		const url = new window.URL(href, window.location.origin);
+		const url = new window.URL(href, 'https://notused.com');
 		if (url) {
 			const keyRegex = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/i;
 			const match = keyRegex.exec(url.pathname);
