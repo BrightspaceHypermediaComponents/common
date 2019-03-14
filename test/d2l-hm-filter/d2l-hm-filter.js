@@ -204,6 +204,32 @@
 
 			loadFilters('data/filters-on.json');
 		});
+		test('if we cannot parse the filters, an error event is sent', (done) => {
+			filter.addEventListener('d2l-hm-filter-error', function() {
+				done();
+			});
+
+			loadFilters('data/filters-error-no-href.json');
+		});
+		test('if we cannot toggle a filter option, an error event is sent', (done) => {
+			filter.addEventListener('d2l-hm-filter-error', function() {
+				done();
+			});
+
+			loadFilters('data/filters-error-no-clear.json').then(async function() {
+				const fetchStub = await _toggleOption(0, 0);
+				fetchStub.restore();
+			});
+		});
+		test('if we cannot clear all options, an error event is sent', (done) => {
+			filter.addEventListener('d2l-hm-filter-error', function() {
+				done();
+			});
+
+			loadFilters('data/filters-error-no-clear-all.json').then(function() {
+				filter._clearAllOptions();
+			});
+		});
 
 		/* Tests for temporary _performSirenActionWithQueryParams workaround */
 		test('when calling performSirenAction with no query params and no fields, the fields are empty', () => {
