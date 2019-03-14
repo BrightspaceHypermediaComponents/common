@@ -1,0 +1,44 @@
+{
+	"class":["collection-filters"],
+	"actions":[
+		{
+			"name":"no-clear-all-action",
+			"href":"data/filters-error-no-clear-all.json",
+			"method":"GET",
+			"type":"application/x-www-form-urlencoded",
+			"fields":[
+				{
+					"name":"existingState",
+					"class":["base64","json"],
+					"type":"hidden",
+					"value":""
+				}
+			]
+		}
+	],
+	"properties": {
+		"applied": {
+			"11111111-1111-1111-1111-111111111110": 1,
+			"22222222-2222-2222-2222-222222222222": 0,
+			"33333333-3333-3333-3333-333333333333": 0
+		}
+	},
+	"entities":[
+		{
+			"rel":["item","https://api.brightspace.com/rels/filters/collection"],
+			"href":"data/11111111-1111-1111-1111-111111111110.json",
+			"class":["collection","filters","filter-category-1"],
+			"title":"By Filter Category 1"
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filters/collection"],
+			"href":"data/22222222-2222-2222-2222-222222222222.json",
+			"class":["collection","filters","filter-category-2"],
+			"title":"By Filter Category 2"
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filters/collection"],
+			"href":"data/33333333-3333-3333-3333-333333333333.json",
+			"class":["collection","filters","filter-category-3"],
+			"title":"By Filter Category 3"
+		}
+	]
+}

@@ -121,6 +121,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			this._dispatchFiltersLoaded();
 		} catch (err) {
 			// Unable to get actions and/or filters.
+			this._dispatchFilterError(err);
 			Promise.reject(err);
 		}
 	}
@@ -285,6 +286,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 					try {
 						cleared = await this._performSirenActionWithQueryParams(f.clearAction);
 					} catch (err) {
+						this._dispatchFilterError(err);
 						Promise.reject(err);
 					}
 					f.clearAction = this._getAction(cleared, 'clear');
@@ -322,6 +324,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		try {
 			return await this._performSirenActionWithQueryParams(this._getAction(entity, 'apply'));
 		} catch (err) {
+			this._dispatchFilterError(err);
 			return Promise.reject(err);
 		}
 	}
@@ -333,6 +336,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			option.selected = !option.selected;
 			this._updateToggleActions(result, filter);
 		} catch (err) {
+			this._dispatchFilterError(err);
 			Promise.reject(err);
 		}
 		return result;
@@ -343,6 +347,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		try {
 			cleared = await this._performSirenActionWithQueryParams(this._clearAction);
 		} catch (err) {
+			this._dispatchFilterError(err);
 			return Promise.reject(err);
 		}
 		this._clearAction = this._getAction(cleared, 'clear');
@@ -440,6 +445,21 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				{
 					detail: {
 						totalSelectedFilters: this._getTotalSelectedFilters()
+					},
+					composed: true,
+					bubbles: true
+				}
+			)
+		);
+	}
+
+	_dispatchFilterError(err) {
+		this.dispatchEvent(
+			new CustomEvent(
+				'd2l-hm-filter-error',
+				{
+					detail: {
+						error: err
 					},
 					composed: true,
 					bubbles: true

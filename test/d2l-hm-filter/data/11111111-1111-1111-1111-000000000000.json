@@ -1,0 +1,45 @@
+{
+	"title":"By Filter Category 1",
+	"class":["collection","filters","filter-category-1"],
+	"actions":[
+		{
+			"name":"no-clear-action",
+			"href":"data/11111111-1111-1111-1111-000000000000.json",
+			"method":"GET",
+			"type":"application/x-www-form-urlencoded",
+			"fields":[
+				{
+					"name":"existingState",
+					"class":["base64","json"],
+					"type":"hidden",
+					"value":""
+				}
+			]
+		}
+	],
+	"entities":[
+		{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 1",
+			"class":["filter","on"],
+			"properties": {
+				"filter": "1"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"data/11111111-1111-1111-1111-000000000000.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":""
+						}
+					]
+				}
+			]
+		}
+	]
+}
