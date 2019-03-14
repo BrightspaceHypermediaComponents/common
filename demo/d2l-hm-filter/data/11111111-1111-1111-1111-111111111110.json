@@ -1,0 +1,103 @@
+{
+	"title":"By Filter Category 1",
+	"class":["collection","filters","filter-category-1"],
+	"actions":[
+		{
+			"name":"clear",
+			"href":"components/d2l-common/demo/d2l-hm-filter/data/11111111-1111-1111-1111-111111111110.json",
+			"method":"GET",
+			"type":"application/x-www-form-urlencoded",
+			"fields":[
+				{
+					"name":"existingState",
+					"class":["base64","json"],
+					"type":"hidden",
+					"value":""
+				}
+			]
+		},
+    {
+      "name": "apply",
+      "href":"components/d2l-common/demo/d2l-hm-filter/data/11111111-1111-1111-1111-111111111110.json",
+      "fields": [
+        {
+          "class": [
+            "base64",
+            "json"
+          ],
+          "type": "hidden",
+          "name": "existingState"
+        }
+      ]
+    }
+	],
+	"entities":[
+		{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 1",
+			"class":["filter","off"],
+			"properties": {
+				"filter": "1"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/11111111-1111-1111-1111-111111111110.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 2",
+			"class":["filter","on"],
+			"properties": {
+				"filter": "2"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/11111111-1111-1111-1111-111111111110.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		},{
+			"rel":["item","https://api.brightspace.com/rels/filter"],
+			"title":"Option 3",
+			"class":["filter","on"],
+			"properties": {
+				"filter": "3"
+			},
+			"actions":[
+				{
+					"name":"add-filter",
+					"href":"components/d2l-common/demo/d2l-hm-filter/data/11111111-1111-1111-1111-111111111110.json",
+					"method":"GET",
+					"type":"application/x-www-form-urlencoded",
+					"fields":[
+						{
+							"name":"existingState",
+							"type":"hidden",
+							"value":"eyJmMmIzMmYwMy01NTZhLTQzNjgtOTQ1YS0yNjE0YjlmNDFmNzYiOlsiNjYwOSJdfQ"
+						}
+					]
+				}
+			]
+		}
+	]
+}

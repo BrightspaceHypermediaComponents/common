@@ -46,9 +46,20 @@
 					<d2l-hm-filter href="data/filters.json" token=""></d2l-hm-filter>
 				</template>
 			</demo-snippet>
+
+			<h3>d2l-hm-filter (with filters selected)</h3>
+			<demo-snippet>
+				<template>
+					<d2l-hm-filter href="data/filters-on.json" token=""></d2l-hm-filter>
+				</template>
+			</demo-snippet>
 		</div>
 	</body>
 	<script type="module">
+		document.body.addEventListener('d2l-hm-filter-filters-loaded', function(e) {
+			// eslint-disable-next-line no-console
+			console.log('d2l-hm-filter-filters-loaded', e.detail);
+		});
 		document.body.addEventListener('d2l-hm-filter-filters-updated', function(e) {
 			// eslint-disable-next-line no-console
 			console.log('d2l-hm-filter-filters-updated', e.detail);

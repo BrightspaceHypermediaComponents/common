@@ -118,6 +118,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			await this._parseFilters(entity);
 			this._dropdown = this._getFilterDropdown();
 			this._populateFilterDropdown();
+			this._dispatchFiltersLoaded();
 		} catch (err) {
 			// Unable to get actions and/or filters.
 			Promise.reject(err);
@@ -423,6 +424,21 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				{
 					detail: {
 						filteredActivities: filtered,
+						totalSelectedFilters: this._getTotalSelectedFilters()
+					},
+					composed: true,
+					bubbles: true
+				}
+			)
+		);
+	}
+
+	_dispatchFiltersLoaded() {
+		this.dispatchEvent(
+			new CustomEvent(
+				'd2l-hm-filter-filters-loaded',
+				{
+					detail: {
 						totalSelectedFilters: this._getTotalSelectedFilters()
 					},
 					composed: true,

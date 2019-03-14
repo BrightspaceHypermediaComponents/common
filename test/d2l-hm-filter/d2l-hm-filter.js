@@ -188,6 +188,22 @@
 			fetchStub.restore();
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
+		test('when the filters are loaded, an event is sent with the total number of filters', (done) => {
+			filter.addEventListener('d2l-hm-filter-filters-loaded', function(e) {
+				assert.equal(0, e.detail.totalSelectedFilters);
+				done();
+			});
+
+			loadFilters('data/filters.json');
+		});
+		test('when preset filters are loaded, an event is sent with the total number of filters', (done) => {
+			filter.addEventListener('d2l-hm-filter-filters-loaded', function(e) {
+				assert.equal(1, e.detail.totalSelectedFilters);
+				done();
+			});
+
+			loadFilters('data/filters-on.json');
+		});
 
 		/* Tests for temporary _performSirenActionWithQueryParams workaround */
 		test('when calling performSirenAction with no query params and no fields, the fields are empty', () => {
