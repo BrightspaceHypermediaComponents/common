@@ -345,7 +345,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		this._clearAction = this._getAction(cleared, 'clear');
 		for (let i = 0; i < this._filters.length; i++) {
 			const f = this._filters[i];
-			const found = this._findInArray(cleared.entities, e => e.href.includes(f.key));
+			const found = this._findInArray(cleared.entities, e => e.href.indexOf(f.key) > -1);
 			if (found) {
 				const filterEntity = await this._fetchFromStore(found.href);
 				f.clearAction = this._getAction(filterEntity, 'clear');
