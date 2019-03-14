@@ -192,10 +192,13 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_getCategoryKeyFromHref(href) {
-		const keyRegex = /\/([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})(\/?\?{0}|\/?\?{1}.*|\..*)$/i;
-		const match = keyRegex.exec(href);
-		if (match && match.length >= 2) {
-			return match[1];
+		const url = new window.URL(href, 'https://notused.com');
+		if (url) {
+			const keyRegex = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/i;
+			const match = keyRegex.exec(url.pathname);
+			if (match && match.length) {
+				return match[0];
+			}
 		}
 	}
 
