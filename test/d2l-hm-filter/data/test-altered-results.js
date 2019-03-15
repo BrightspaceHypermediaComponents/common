@@ -63,6 +63,20 @@ window.D2LHMFilterTestFixtures = {
 							value: ''
 						}
 					]
+				},
+				{
+					name: 'apply',
+					href: 'data/11111111-1111-1111-1111-111111111111.json',
+					method: 'GET',
+					type: 'application/x-www-form-urlencoded',
+					fields: [
+						{
+							name: 'existingState',
+							class: ['base64', 'json'],
+							type: 'hidden',
+							value: ''
+						}
+					]
 				}
 			],
 			entities: [

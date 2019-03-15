@@ -1,3 +1,5 @@
+import '@polymer/iron-test-helpers/mock-interactions.js';
+
 (function() {
 	let filter;
 	let expectedFilters = [];
@@ -203,6 +205,35 @@
 			});
 
 			loadFilters('data/filters-on.json');
+		});
+		test('when we select a filter option, an event is sent to let the consumer know we are updating', (done) => {
+			let fetchStub;
+			filter.addEventListener('d2l-hm-filter-filters-updating', function() {
+				filter.addEventListener('d2l-hm-filter-filters-updated', function() {
+					fetchStub.restore();
+					done();
+				});
+			});
+
+			loadFilters('data/filters.json').then(function() {
+				fetchStub = sinon.stub(window.d2lfetch, 'fetch');
+				fetchStub.withArgs(`${window.location.origin}/data/11111111-1111-1111-1111-111111111111.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures['toggled_filters_category_1_result']));
+				filter._handleOptionChanged({detail: {categoryKey: '11111111-1111-1111-1111-111111111111', optionKey: '1'}});
+			});
+		});
+		test('when we select the clear button, an event is sent to let the consumer know we are updating', (done) => {
+			let clearStub;
+			filter.addEventListener('d2l-hm-filter-filters-updating', function() {
+				filter.addEventListener('d2l-hm-filter-filters-updated', function() {
+					clearStub.restore();
+					done();
+				});
+			});
+
+			loadFilters('data/filters-on.json').then(function() {
+				clearStub = sinon.stub(filter, '_clearAllOptions');
+				filter._handleFiltersCleared();
+			});
 		});
 		test('if we cannot parse the filters, an error event is sent', (done) => {
 			filter.addEventListener('d2l-hm-filter-error', function() {

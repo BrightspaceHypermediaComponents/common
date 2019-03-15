@@ -216,6 +216,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleOptionsChanged(e) {
+		this._dispatchFiltersUpdating();
 		const applied = await this._toggleFilters(e.detail.selectedFilters);
 		this._dispatchFiltersUpdated(applied);
 	}
@@ -223,6 +224,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _handleOptionChanged(e) {
 		const option = this._getFilterOptionByKey(e.detail.categoryKey, e.detail.optionKey);
 		if (option && option.selected !== e.detail.newValue) {
+			this._dispatchFiltersUpdating();
 			const filter = this._getFilterByKey(e.detail.categoryKey);
 			const apply = await this._toggleOption(filter, option);
 			if (apply) {
@@ -250,6 +252,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleFiltersCleared() {
+		this._dispatchFiltersUpdating();
 		const result = await this._clearAllOptions();
 		this._dispatchFiltersUpdated(result);
 	}
@@ -420,6 +423,18 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			}
 		}
 		return result;
+	}
+
+	_dispatchFiltersUpdating() {
+		this.dispatchEvent(
+			new CustomEvent(
+				'd2l-hm-filter-filters-updating',
+				{
+					composed: true,
+					bubbles: true
+				}
+			)
+		);
 	}
 
 	_dispatchFiltersUpdated(filtered) {
