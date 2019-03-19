@@ -76,7 +76,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		} else {
 			this.addEventListener('d2l-filter-dropdown-option-changed', this._handleOptionChanged);
 		}
-		this.addEventListener('d2l-filter-selected-changed', this._handleSelectedFilterChanged);
+		this.addEventListener('d2l-filter-selected-changed', this._handleSelectedFilterCategoryChanged);
 		this.addEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
@@ -86,7 +86,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		} else {
 			this.removeEventListener('d2l-filter-dropdown-option-changed', this._handleOptionChanged);
 		}
-		this.removeEventListener('d2l-filter-selected-changed', this._handleSelectedFilterChanged);
+		this.removeEventListener('d2l-filter-selected-changed', this._handleSelectedFilterCategoryChanged);
 		this.removeEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
@@ -180,7 +180,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				}
 			}
 			if (filters && filters.length) {
-				var selectedFilterIndex = this._selectedCategory ? this._getFilterIndexFromKey(filters, this._selectedCategory) : 0;
+				var selectedFilterIndex = this._selectedCategory ? this._getCategoryIndexFromKey(filters, this._selectedCategory) : 0;
 
 				// The other filters are lazily loaded when their tab is opened for the first time.
 				filters[selectedFilterIndex].options = await this._getFilterOptions(filters[selectedFilterIndex].href, filters[selectedFilterIndex].key);
@@ -202,7 +202,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
-	_getFilterIndexFromKey(filters, key) {
+	_getCategoryIndexFromKey(filters, key) {
 		for (var i = 0 ; i < filters.length; i++) {
 			if (filters[i].key === key) {
 				return i;
@@ -217,7 +217,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	async _handleOptionsChanged(e) {
 		this._dispatchFiltersUpdating();
-		const applied = await this._toggleFilters(e.detail.selectedFilters);
+		const applied = await this._toggleFilterOptions(e.detail.selectedFilters);
 		this._dispatchFiltersUpdated(applied);
 	}
 
@@ -225,7 +225,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		const option = this._getFilterOptionByKey(e.detail.categoryKey, e.detail.optionKey);
 		if (option && option.selected !== e.detail.newValue) {
 			this._dispatchFiltersUpdating();
-			const filter = this._getFilterByKey(e.detail.categoryKey);
+			const filter = this._getFilterCategoryByKey(e.detail.categoryKey);
 			const apply = await this._toggleOption(filter, option);
 			if (apply) {
 				filter.clearAction = this._getAction(apply, 'clear');
@@ -241,7 +241,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
-	async _handleSelectedFilterChanged(e) {
+	async _handleSelectedFilterCategoryChanged(e) {
 		const filter = this._findInArray(this._filters, f => f.key === e.detail.selectedKey);
 		this._selectedCategory = e.detail.selectedKey;
 		if (!filter.loaded) {
@@ -279,12 +279,12 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		return this._getAction(option, actionName);
 	}
 
-	async _toggleFilters(activatedOptions) {
+	async _toggleFilterOptions(activatedOptions) {
 		if (activatedOptions && activatedOptions.length) {
 			let applyAll = null;
 			for (let j = 0; j < this._filters.length; j++) {
 				const f = this._filters[j];
-				if (this._filterShouldBeCleared(f, activatedOptions)) {
+				if (this._filterCategoryShouldBeCleared(f, activatedOptions)) {
 					let cleared;
 					try {
 						cleared = await this._performSirenActionWithQueryParams(f.clearAction);
@@ -373,16 +373,16 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	_updateToggleActions(entity, filter) {
 		filter.options.forEach(function(o) {
-			o.toggleAction = this._getToggleFilterAction(entity, o);
+			o.toggleAction = this._getToggleOptionAction(entity, o);
 		}.bind(this));
 	}
 
-	_getToggleFilterAction(filterEntity, option) {
+	_getToggleOptionAction(filterEntity, option) {
 		const ent = this._findInArray(filterEntity.entities, e => e.properties.filter === option.key);
 		return this._getOptionToggleAction(ent);
 	}
 
-	_filterShouldBeCleared(filter, selected) {
+	_filterCategoryShouldBeCleared(filter, selected) {
 		if (!filter.options) { return false; }
 		if (!filter.options.length) { return false; }
 		if (!this._findInArray(filter.options, o => o.selected)) { return false; }
@@ -391,12 +391,12 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		return true;
 	}
 
-	_getFilterByKey(key) {
+	_getFilterCategoryByKey(key) {
 		return this._findInArray(this._filters, f => f.key === key);
 	}
 
 	_getFilterOptionByKey(cKey, oKey) {
-		const filter = this._getFilterByKey(cKey);
+		const filter = this._getFilterCategoryByKey(cKey);
 		if (filter) {
 			return this._findInArray(filter.options, o => o.key === oKey);
 		}
@@ -409,7 +409,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
-	_getTotalSelectedFilters() {
+	_getTotalSelectedFilterOptions() {
 		let result = 0;
 		for (let i = 0; i < this._filters.length; i++) {
 			if (this._filters[i].options.length) {
@@ -444,7 +444,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				{
 					detail: {
 						filteredActivities: filtered,
-						totalSelectedFilters: this._getTotalSelectedFilters()
+						totalSelectedFilters: this._getTotalSelectedFilterOptions()
 					},
 					composed: true,
 					bubbles: true
@@ -459,7 +459,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				'd2l-hm-filter-filters-loaded',
 				{
 					detail: {
-						totalSelectedFilters: this._getTotalSelectedFilters()
+						totalSelectedFilters: this._getTotalSelectedFilterOptions()
 					},
 					composed: true,
 					bubbles: true
