@@ -144,17 +144,17 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 		test('switching to a new tab loads new filter options', async() => {
 			await loadFilters('data/filters.json');
 			const tFilter = 1;
-			await filter._handleSelectedFilterChanged({detail: { selectedKey: expectedFilters[tFilter].key }});
+			await filter._handleSelectedFilterCategoryChanged({detail: { selectedKey: expectedFilters[tFilter].key }});
 			_addExpectedOptions(tFilter);
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
 		test('switching to an already selected tab does not reload filter options', async() => {
 			await loadFilters('data/filters.json');
 			const tFilter = 1;
-			await filter._handleSelectedFilterChanged({detail: { selectedKey: expectedFilters[tFilter].key }});
+			await filter._handleSelectedFilterCategoryChanged({detail: { selectedKey: expectedFilters[tFilter].key }});
 			_addExpectedOptions(tFilter);
 			const getSpy = sinon.spy(filter, '_getFilterOptions');
-			await filter._handleSelectedFilterChanged({detail: { selectedKey: expectedFilters[0].key }});
+			await filter._handleSelectedFilterCategoryChanged({detail: { selectedKey: expectedFilters[0].key }});
 			assert.equal(0, getSpy.callCount);
 			getSpy.restore();
 		});
@@ -170,7 +170,7 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 		});
 		test('toggling multiple options works correctly', async() => {
 			await loadFilters('data/filters.json');
-			await filter._handleSelectedFilterChanged({detail: { selectedKey: expectedFilters[1].key }});
+			await filter._handleSelectedFilterCategoryChanged({detail: { selectedKey: expectedFilters[1].key }});
 			let fetchStub = await _toggleOption(0, 0);
 			fetchStub = await _toggleOption(1, 0, fetchStub);
 			fetchStub.restore();
