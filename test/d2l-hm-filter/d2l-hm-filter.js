@@ -215,11 +215,13 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 					done();
 				});
 			});
-
+			
 			loadFilters('data/filters.json').then(function() {
 				fetchStub = sinon.stub(window.d2lfetch, 'fetch');
-				fetchStub.withArgs(`${window.location.origin}/data/11111111-1111-1111-1111-111111111111.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures['toggled_filters_category_1_result']));
+				fetchStub.withArgs(sinon.match('/data/11111111-1111-1111-1111-111111111111.json'), sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures['toggled_filters_category_1_result']));
 				filter._handleOptionChanged({detail: {categoryKey: '11111111-1111-1111-1111-111111111111', optionKey: '1'}});
+				fetchStub.restore();
+				done();
 			});
 		});
 		test('when we select the clear button, an event is sent to let the consumer know we are updating', (done) => {
