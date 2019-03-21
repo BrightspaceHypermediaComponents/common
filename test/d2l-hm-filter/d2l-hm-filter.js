@@ -29,6 +29,7 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 						_assertObjectsEqual(expected[prop][i], obj[prop][i]);
 					}
 				} else if (obj[prop] instanceof Object) {
+					assert(expected[prop] instanceof Object);
 					_assertObjectsEqual(expected[prop], obj[prop]);
 				} else {
 					assert.equal(expected[prop], obj[prop]);
@@ -89,7 +90,7 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 		for (let i = 1; i <= 3; i++) {
 			const key = _getKeyGuid(i);
 			expectedFilters.push({
-				key: key,
+				key: `collection_filter-category-${i}_filters`,
 				title: `By Filter Category ${i}`,
 				href: `data/${key}.json`,
 				startingApplied: 0,
@@ -119,7 +120,7 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
 		test('whitelist filters and sorts available filters', async() => {
-			const whiteList = ['33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111'];
+			const whiteList = ['filter-category-3', 'filter-category-1'];
 			filter.categoryWhitelist = whiteList;
 			await loadFilters('data/filters.json');
 			assert.equal(whiteList.length, filter._filters.length);
