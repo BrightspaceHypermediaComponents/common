@@ -78,6 +78,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 		this.addEventListener('d2l-filter-selected-changed', this._handleSelectedFilterCategoryChanged);
 		this.addEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
+		this.addEventListener('d2l-filter-dropdown-page-searched', this._search);
 	}
 
 	detached() {
@@ -88,6 +89,40 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 		this.removeEventListener('d2l-filter-selected-changed', this._handleSelectedFilterCategoryChanged);
 		this.removeEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
+		this.removeEventListener('d2l-filter-dropdown-page-searched', this._search);
+	}
+
+	async _search(e) {
+		if (!e || !e.detail) {
+			throw new Error('Not enough information to search');
+		}
+		const searchedCategoryKey = e.detail.categoryKey;
+
+		const searchedFilterCategory = this._filters.find(f => f.key === searchedCategoryKey);
+		if (!searchedFilterCategory) {
+			throw new Error(`Could not find filter category ${searchedCategoryKey}`);
+		}
+
+		const filterCategoryEntityResponse = await this._fetchFromStore(searchedFilterCategory.href);
+		if (!filterCategoryEntityResponse || !filterCategoryEntityResponse.entity) {
+			throw new Error(`Failed to fetch filter category ${searchedFilterCategory.href}`);
+		}
+		const filterCategoryEntity = filterCategoryEntityResponse.entity;
+		if (!filterCategoryEntity.hasActionByName('search')) {
+			throw new Error('Could not find search action');
+		}
+		const searchAction = filterCategoryEntity.getActionByName('search');
+		const searchField = searchAction.getField('search');
+		if (!searchField) {
+			throw new Error('Could not find search field');
+		}
+		searchField.value = e.detail.value;
+		const newFilterCategory = await this._performSirenActionWithQueryParams(searchAction);
+
+		searchedFilterCategory.options = this._createFilterOptions(newFilterCategory, searchedFilterCategory.key);
+		this._dropdown.setFilterOptions(searchedFilterCategory.key, searchedFilterCategory.options);
+
+		return searchedFilterCategory;
 	}
 
 	_fetchFromStore(url) {
@@ -260,18 +295,20 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _getFilterOptions(href, cKey) {
 		const filter = await this._fetchFromStore(href);
 		if (filter && filter.entity && filter.entity.entities) {
-			return filter.entity.entities.map(o => {
-				return {
-					title: o.title,
-					key: o.properties.filter,
-					categoryKey: cKey,
-					selected: this._getOptionStatusFromClasses(o.class),
-					toggleAction: this._getOptionToggleAction(o)
-				};
-			});
+			return this._createFilterOptions(filter.entity, cKey);
 		}
 
 		return [];
+	}
+
+	_createFilterOptions(entity, categoryKey) {
+		return entity.entities.map(option => ({
+			title: option.title,
+			key: option.properties.filter,
+			categoryKey: categoryKey,
+			selected: this._getOptionStatusFromClasses(option.class),
+			toggleAction: this._getOptionToggleAction(option)
+		}));
 	}
 
 	_getOptionToggleAction(option) {
