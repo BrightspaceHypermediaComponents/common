@@ -22,6 +22,7 @@
     "@webcomponents/webcomponentsjs": "^2.2.4",
     "babel-eslint": "^10.0.1",
     "chromedriver": "^2.40.0",
+    "d2l-inputs": "BrightspaceUI/inputs#semver:^2",
     "d2l-typography": "BrightspaceUI/typography#semver:^7",
     "eslint": "^4.19.1",
     "eslint-config-brightspace": "^0.4.1",
