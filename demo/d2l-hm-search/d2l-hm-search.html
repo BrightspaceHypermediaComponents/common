@@ -4,9 +4,13 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-		<title>d2l-common demo</title>
+		<title>d2l-hm-search demo</title>
 
-		<script src="../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+		<script src="../../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+		<!-- For IE11 -->
+		<script src="../../../lie/dist/lie.polyfill.min.js"></script>
+		<script type="module" src="../../../whatwg-fetch/fetch.js"></script>
+		<script type="module" src="../../node_modules/url-polyfill/url-polyfill.js"></script>
 
 		<script type="module">
 			import '@polymer/iron-demo-helpers/demo-pages-shared-styles';
@@ -26,6 +30,8 @@
 			document.head.appendChild(style.content);
 		</script>
 
+		<script type="module" src="../../components/d2l-hm-search/d2l-hm-search.js"></script>
+
 		<style>
 			html {
 				font-size: 20px;
@@ -34,11 +40,12 @@
 	</head>
 	<body unresolved class="d2l-typography">
 		<div class="vertical-section-container centered">
-			<h3>Demos</h3>
-			<ul>
-				<li><a href="d2l-hm-filter/d2l-hm-filter.html">d2l-hm-filter</a></li>
-				<li><a href="d2l-hm-search/d2l-hm-search.html">d2l-hm-search</a></li>
-			</ul>
+			<h3>d2l-hm-search</h3>
+			<demo-snippet>
+				<template>
+					<d2l-hm-search></d2l-hm-search>
+				</template>
+			</demo-snippet>
 		</div>
 	</body>
 </html>
