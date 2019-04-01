@@ -261,7 +261,6 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 				filter._clearAllOptions();
 			});
 		});
-
 		/* Tests for temporary _performSirenActionWithQueryParams workaround */
 		test('when calling performSirenAction with no query params and no fields, the fields are empty', () => {
 			const action = {
@@ -354,6 +353,125 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 			assert.deepEqual(filter._parseQuery('key=value&anotherKey'), [['key', 'value'], ['anotherKey', '']]);
 			assert.deepEqual(filter._parseQuery('?key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
 			assert.deepEqual(filter._parseQuery('key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
+		});
+		test('when calling perform siren action with no query params and no fields, the fields are empty', () => {
+
+			const action = {
+				href : 'http://127.0.0.1/',
+				name: 'apply',
+				type: 'application/x-www-form-urlencoded',
+				method: 'GET'
+			};
+
+			const stub = sinon.stub(filter, 'performSirenAction', function(passedAction) {
+				assert.deepEqual(action, passedAction);
+			});
+
+			filter._performSirenActionWithQueryParams(action);
+			sinon.assert.calledWith(stub, action);
+		});
+		test('when calling perform siren action with no query params, the fields are not modified', () => {
+
+			const action = {
+				href : 'http://127.0.0.1/',
+				name: 'apply',
+				type: 'application/x-www-form-urlencoded',
+				method: 'GET',
+				fields : [
+					{
+						type: 'hidden',
+						name : 'existingField',
+						value: 'existingValue'
+					}]
+			};
+
+			const stub = sinon.stub(filter, 'performSirenAction', function(passedAction) {
+				assert.deepEqual(action, passedAction);
+			});
+
+			filter._performSirenActionWithQueryParams(action);
+			sinon.assert.calledWith(stub, action);
+		});
+		test('when calling perform siren action with no query params and custom params, fields contain custom params', () => {
+
+			const action = {
+				href : 'http://127.0.0.1/',
+				name: 'apply',
+				type: 'application/x-www-form-urlencoded',
+				method: 'GET'
+			};
+
+			const customParams = { customParam1: 'custom', customParam2: 'custom2' };
+			sinon.stub(filter, 'performSirenAction', function(passedAction) {
+				const fields = passedAction.fields;
+				assert.equal(Object.keys(customParams).length, fields.length);
+
+				Object.keys(customParams).forEach(function(p) {
+					assert.isTrue(fields.some(function(elm) { return elm.name === p && elm.value === customParams[p]; }));
+				});
+			});
+
+			filter._performSirenActionWithQueryParams(action, customParams);
+		});
+		test('when calling perform siren action with query params, the query params are added as fields', () => {
+
+			const action = {
+				href : 'http://127.0.0.1?testname=testvalue&anothertestname=anothertestvalue',
+				name: 'apply',
+				type: 'application/x-www-form-urlencoded',
+				method: 'GET',
+				fields : [
+					{
+						type: 'hidden',
+						name : 'existingField',
+						value: 'existingValue'
+					}]
+			};
+
+			const expectedAction = {
+				href : 'http://127.0.0.1?testname=testvalue&anothertestname=anothertestvalue',
+				name: 'apply',
+				type: 'application/x-www-form-urlencoded',
+				method: 'GET',
+				fields : [
+					{
+						type: 'hidden',
+						name : 'existingField',
+						value: 'existingValue'
+					},
+					{
+						type: 'hidden',
+						name : 'testname',
+						value: 'testvalue'
+					},
+					{
+						type: 'hidden',
+						name : 'anothertestname',
+						value: 'anothertestvalue'
+					}]
+			};
+
+			const stub = sinon.stub(filter, 'performSirenAction', function(passedAction) {
+				assert.deepEqual(expectedAction, passedAction);
+			});
+
+			filter._performSirenActionWithQueryParams(action);
+			sinon.assert.calledWith(stub, action);
+		});
+		test('_getCustomPageSizeParams returns undefined when resultSize not set', function() {
+			const customPageSizeParams = filter._getCustomPageSizeParams();
+			assert.equal(undefined, customPageSizeParams);
+		});
+		[
+			[-1, undefined],
+			[0, {pageSize: 0}],
+			[1, {pageSize: 1}]
+		].forEach(function(testCase) {
+			test(`_getCustomPageSizeParams returns ${JSON.stringify(testCase[1])} when resultSize is ${testCase[0]}`, function() {
+				filter.resultSize = testCase[0];
+				const customPageSizeParams = filter._getCustomPageSizeParams();
+				assert.deepEqual(testCase[1], customPageSizeParams);
+			});
 		});
 	});
 })();
