@@ -32,7 +32,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			},
 			resultSize: {
 				type: Number,
-				value: undefined
+				value: undefined,
+				reflectToAttribute: true
 			},
 			_filters: {
 				type: Array,
