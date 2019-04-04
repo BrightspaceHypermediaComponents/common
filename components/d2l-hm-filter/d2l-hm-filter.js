@@ -30,6 +30,11 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				type: Array,
 				value: []
 			},
+			resultSize: {
+				type: Number,
+				value: undefined,
+				reflectToAttribute: true
+			},
 			_filters: {
 				type: Array,
 				value: [
@@ -215,6 +220,11 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		return !!(this._findInArray(classes, c => c === 'on'));
 	}
 
+	_getCustomPageSizeParams() {
+		const customParams = this.resultSize >= 0 ? {pageSize: this.resultSize} : undefined;
+		return customParams;
+	}
+
 	async _handleOptionsChanged(e) {
 		this._dispatchFiltersUpdating();
 		const applied = await this._toggleFilterOptions(e.detail.selectedFilters);
@@ -232,7 +242,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				const applyAll = await this._apply(apply);
 				if (applyAll) {
 					this._clearAction = this._getAction(applyAll, 'clear');
-					const applied =  await this._apply(applyAll);
+
+					const customParams = this._getCustomPageSizeParams();
+					const applied =  await this._apply(applyAll, customParams);
 					if (applied) {
 						this._dispatchFiltersUpdated(applied);
 					}
@@ -316,16 +328,18 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			}
 			if (applyAll) {
 				this._clearAction = this._getAction(applyAll, 'clear');
-				return await this._apply(applyAll);
+
+				const customParams = this._getCustomPageSizeParams();
+				return await this._apply(applyAll, customParams);
 			}
 		} else {
 			return await this._clearAllOptions();
 		}
 	}
 
-	async _apply(entity) {
+	async _apply(entity, customParams) {
 		try {
-			return await this._performSirenActionWithQueryParams(this._getAction(entity, 'apply'));
+			return await this._performSirenActionWithQueryParams(this._getAction(entity, 'apply'), customParams);
 		} catch (err) {
 			this._dispatchFilterError(err);
 			return Promise.reject(err);
@@ -368,7 +382,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				o.selected = false;
 			});
 		});
-		return await this._apply(cleared);
+
+		const customParams = this._getCustomPageSizeParams();
+		return await this._apply(cleared, customParams);
 	}
 
 	_updateToggleActions(entity, filter) {
@@ -487,7 +503,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	* Specifically, the getSirenFields function is broken: https://github.com/Brightspace/polymer-siren-behaviors/blob/master/store/siren-action-behavior.js#L14
 	* It does not grab the query parameters correctly, and duplicate parameters and fields should not be included
 	*/
-	_performSirenActionWithQueryParams(action) {
+	_performSirenActionWithQueryParams(action, customParams) {
 		const url = new URL(action.href, window.location.origin);
 		const searchParams = this._parseQuery(url.search);
 
@@ -500,6 +516,12 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				action.fields.push({ name: value[0], value: value[1], type: 'hidden' });
 			}
 		}.bind(this));
+
+		if (customParams) {
+			Object.keys(customParams).forEach(function(paramName) {
+				action.fields.push({name: paramName, value: customParams[paramName], type: 'hidden'});
+			});
+		}
 
 		return this.performSirenAction(action);
 	}
