@@ -34,16 +34,18 @@
 			search.addEventListener('d2l-hm-search-results-loaded', function(e) {
 				performActionStub.restore();
 				assert.equal(searchResult, e.detail.results);
+				assert.equal(false, e.detail.searchIsCleared);
 				done();
 			});
 			search.searchAction = searchAction;
 			search._handleSearch({ detail: { value: 'test' }});
 		});
-		test('when we search for an empty string, a cleared event is sent with the search results', (done) => {
+		test('when we search for an empty string, an event is sent with the search results', (done) => {
 			const performActionStub = _stubPerformSirenAction();
-			search.addEventListener('d2l-hm-search-results-cleared', function(e) {
+			search.addEventListener('d2l-hm-search-results-loaded', function(e) {
 				performActionStub.restore();
 				assert.equal(searchResult, e.detail.results);
+				assert.equal(true, e.detail.searchIsCleared);
 				done();
 			});
 			search.searchAction = searchAction;

@@ -50,18 +50,14 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 			const field = this.searchAction.getFieldByName('collectionSearch');
 			field.value = e.detail.value;
 			const results = await this._performSirenActionWithQueryParams(this.searchAction);
-			if (e.detail.value) {
-				this._dispatchResultsLoaded(results);
-			} else {
-				this._dispatchResultsCleared(results);
-			}
+			this._dispatchResultsLoaded(results, !e.detail.value);
 		} catch (err) {
 			this._dispatchSearchError(err);
 			Promise.reject(err);
 		}
 	}
 
-	_dispatchResultsLoaded(results) {
+	_dispatchResultsLoaded(results, searchIsCleared) {
 		this.dispatchEvent(
 			new CustomEvent(
 				'd2l-hm-search-results-loaded',
@@ -69,22 +65,8 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 					composed: true,
 					bubbles: true,
 					detail: {
-						results: results
-					}
-				}
-			)
-		);
-	}
-
-	_dispatchResultsCleared(results) {
-		this.dispatchEvent(
-			new CustomEvent(
-				'd2l-hm-search-results-cleared',
-				{
-					composed: true,
-					bubbles: true,
-					detail: {
-						results: results
+						results: results,
+						searchIsCleared: searchIsCleared
 					}
 				}
 			)
