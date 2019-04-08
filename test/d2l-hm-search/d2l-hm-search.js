@@ -51,6 +51,18 @@
 			search.searchAction = searchAction;
 			search._handleSearch({ detail: { value: '' }});
 		});
+		test('when we submit a search, an event is sent to let the consumer know we are loading', (done) => {
+			const performActionStub = _stubPerformSirenAction();
+			search.addEventListener('d2l-hm-search-results-loading', function() {
+				search.addEventListener('d2l-hm-search-results-loaded', function() {
+					performActionStub.restore();
+					done();
+				});
+			});
+
+			search.searchAction = searchAction;
+			search._handleSearch({ detail: { value: 'test' }});
+		});
 		test('when there is an error performing the search, an error event is sent', (done) => {
 			const performActionStub = sinon.stub(search, '_performSirenActionWithQueryParams');
 			performActionStub.throws('error!');

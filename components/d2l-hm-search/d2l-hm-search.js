@@ -60,6 +60,7 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 
 	async _handleSearch(e) {
 		try {
+			this._dispatchResultsLoading();
 			const field = this.searchAction.getFieldByName('collectionSearch');
 			field.value = e.detail.value;
 			const results = await this._performSirenActionWithQueryParams(this.searchAction);
@@ -68,6 +69,18 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 			this._dispatchSearchError(err);
 			Promise.reject(err);
 		}
+	}
+
+	_dispatchResultsLoading() {
+		this.dispatchEvent(
+			new CustomEvent(
+				'd2l-hm-search-results-loading',
+				{
+					composed: true,
+					bubbles: true
+				}
+			)
+		);
 	}
 
 	_dispatchResultsLoaded(results, searchIsCleared) {
