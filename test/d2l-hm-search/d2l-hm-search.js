@@ -73,6 +73,6 @@
 			});
 			search.searchAction = searchAction;
 			search.clearSearch();
-		})
+		});
 	});
 })();
