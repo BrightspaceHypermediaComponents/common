@@ -51,15 +51,40 @@
 			search.searchAction = searchAction;
 			search._handleSearch({ detail: { value: '' }});
 		});
+		test('when we submit a search, an event is sent to let the consumer know we are loading', (done) => {
+			const performActionStub = _stubPerformSirenAction();
+			search.addEventListener('d2l-hm-search-results-loading', function() {
+				search.addEventListener('d2l-hm-search-results-loaded', function() {
+					performActionStub.restore();
+					done();
+				});
+			});
+
+			search.searchAction = searchAction;
+			search._handleSearch({ detail: { value: 'test' }});
+		});
 		test('when there is an error performing the search, an error event is sent', (done) => {
 			const performActionStub = sinon.stub(search, '_performSirenActionWithQueryParams');
 			performActionStub.throws('error!');
 			search.addEventListener('d2l-hm-search-error', function(e) {
+				performActionStub.restore();
 				assert.include(e.detail.error.toString(), 'error!');
 				done();
 			});
 			search.searchAction = searchAction;
 			search._handleSearch({ detail: { value: '' }});
+		});
+		test('clearSearch causes search event to be thrown and value to be cleared', (done) => {
+			const performActionStub = _stubPerformSirenAction();
+			search.addEventListener('d2l-hm-search-results-loaded', function(e) {
+				performActionStub.restore();
+				assert.equal(searchResult, e.detail.results);
+				assert.equal(true, e.detail.searchIsCleared);
+				assert.equal('', search.shadowRoot.querySelector('d2l-input-search').value);
+				done();
+			});
+			search.searchAction = searchAction;
+			search.clearSearch();
 		});
 	});
 })();
