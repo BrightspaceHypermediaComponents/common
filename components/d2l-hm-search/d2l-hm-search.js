@@ -15,7 +15,7 @@ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
 class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.SirenActionBehavior], PolymerElement) {
 	static get template() {
 		return html `
-		<d2l-input-search placeholder="[[placeholder]]", value="[[value]]"></d2l-input-search>
+		<d2l-input-search placeholder="[[placeholder]]"></d2l-input-search>
 		`;
 	}
 	static get is() { return 'd2l-hm-search'; }
@@ -26,10 +26,6 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 				value: {}
 			},
 			placeholder: {
-				type: String,
-				value: ''
-			},
-			value: {
 				type: String,
 				value: ''
 			}
@@ -50,8 +46,9 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 	}
 
 	clearSearch() {
-		this.value = '';
-		this.shadowRoot.querySelector('d2l-input-search').search();
+		const search = this._getSearchInput();
+		search.value = '';
+		search.search();
 	}
 
 	_getSearchInput() {
