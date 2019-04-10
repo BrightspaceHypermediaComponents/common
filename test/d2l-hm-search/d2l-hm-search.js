@@ -91,6 +91,7 @@
 			assert.equal(undefined, customPageSizeParams);
 		});
 		[
+			[undefined, undefined],
 			[-1, undefined],
 			[0, {pageSize: 0}],
 			[1, {pageSize: 1}]
