@@ -86,5 +86,21 @@
 			search.searchAction = searchAction;
 			search.clearSearch();
 		});
+		test('_getCustomPageSizeParams returns undefined when resultSize not set', function() {
+			const customPageSizeParams = search._getCustomPageSizeParams();
+			assert.equal(undefined, customPageSizeParams);
+		});
+		[
+			[undefined, undefined],
+			[-1, undefined],
+			[0, {pageSize: 0}],
+			[1, {pageSize: 1}]
+		].forEach(function(testCase) {
+			test(`_getCustomPageSizeParams returns ${JSON.stringify(testCase[1])} when resultSize is ${testCase[0]}`, function() {
+				search.resultSize = testCase[0];
+				const customPageSizeParams = search._getCustomPageSizeParams();
+				assert.deepEqual(testCase[1], customPageSizeParams);
+			});
+		});
 	});
 })();
