@@ -28,7 +28,12 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 			placeholder: {
 				type: String,
 				value: ''
-			}
+			},
+			resultSize: {
+				type: Number,
+				value: undefined,
+				reflectToAttribute: true
+			},
 		};
 	}
 	ready() {
@@ -55,12 +60,17 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 		return this.shadowRoot.querySelector('d2l-input-search');
 	}
 
+	_getCustomPageSizeParams() {
+		const customParams = this.resultSize >= 0 ? {pageSize: this.resultSize} : undefined;
+		return customParams;
+	}
+
 	async _handleSearch(e) {
 		try {
 			this._dispatchResultsLoading();
 			const field = this.searchAction.getFieldByName('collectionSearch');
 			field.value = e.detail.value;
-			const results = await this._performSirenActionWithQueryParams(this.searchAction);
+			const results = await this._performSirenActionWithQueryParams(this.searchAction, this._getCustomPageSizeParams());
 			this._dispatchResultsLoaded(results, !e.detail.value);
 		} catch (err) {
 			this._dispatchSearchError(err);
@@ -115,7 +125,7 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 	* Specifically, the getSirenFields function is broken: https://github.com/Brightspace/polymer-siren-behaviors/blob/master/store/siren-action-behavior.js#L14
 	* It does not grab the query parameters correctly, and duplicate parameters and fields should not be included
 	*/
-	_performSirenActionWithQueryParams(action) {
+	_performSirenActionWithQueryParams(action, customParams) {
 		const url = new URL(action.href, window.location.origin);
 		const searchParams = this._parseQuery(url.search);
 
@@ -128,6 +138,13 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 				action.fields.push({ name: value[0], value: value[1], type: 'hidden' });
 			}
 		}.bind(this));
+
+		if (customParams) {
+			Object.keys(customParams).forEach(function(paramName) {
+				action.fields.push({name: paramName, value: customParams[paramName], type: 'hidden'});
+			});
+		}
+
 		return this.performSirenAction(action);
 	}
 
