@@ -102,5 +102,20 @@
 				assert.deepEqual(testCase[1], customPageSizeParams);
 			});
 		});
+		test('_parseQuery returns expected results', () => {
+			assert.deepEqual(search._parseQuery(), []);
+			assert.deepEqual(search._parseQuery(''), []);
+			assert.deepEqual(search._parseQuery(null), []);
+			assert.deepEqual(search._parseQuery('?key'), [['key', '']]);
+			assert.deepEqual(search._parseQuery('key'), [['key', '']]);
+			assert.deepEqual(search._parseQuery('?key=value'), [['key', 'value']]);
+			assert.deepEqual(search._parseQuery('key=value'), [['key', 'value']]);
+			assert.deepEqual(search._parseQuery('?key=value&anotherKey'), [['key', 'value'], ['anotherKey', '']]);
+			assert.deepEqual(search._parseQuery('key=value&anotherKey'), [['key', 'value'], ['anotherKey', '']]);
+			assert.deepEqual(search._parseQuery('?key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
+			assert.deepEqual(search._parseQuery('key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
+			assert.deepEqual(search._parseQuery('key=value&anotherKey=another%20Value'), [['key', 'value'], ['anotherKey', 'another Value']]);
+			assert.deepEqual(search._parseQuery('%3F%3F=1'), [['??', '1']]);
+		});
 	});
 })();
