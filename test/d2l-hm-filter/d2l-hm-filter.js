@@ -355,6 +355,8 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 			assert.deepEqual(filter._parseQuery('key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
 			assert.deepEqual(filter._parseQuery('key=value&anotherKey=another%20Value'), [['key', 'value'], ['anotherKey', 'another Value']]);
 			assert.deepEqual(filter._parseQuery('%3F%3F=1'), [['??', '1']]);
+			assert.deepEqual(filter._parseQuery('key=value+with%2Bplus'), [['key', 'value with+plus']]);
+			assert.deepEqual(filter._parseQuery('key+with%2Bplus=value+with%2Bplus'), [['key with+plus', 'value with+plus']]);
 		});
 		test('when calling perform siren action with no query params and no fields, the fields are empty', () => {
 

@@ -102,7 +102,7 @@
 				assert.deepEqual(testCase[1], customPageSizeParams);
 			});
 		});
-		test('_parseQuery returns expected results', () => {
+		test('_parseQuery returns expected results search', function() {
 			assert.deepEqual(search._parseQuery(), []);
 			assert.deepEqual(search._parseQuery(''), []);
 			assert.deepEqual(search._parseQuery(null), []);
@@ -116,6 +116,7 @@
 			assert.deepEqual(search._parseQuery('key=value&anotherKey=anotherValue'), [['key', 'value'], ['anotherKey', 'anotherValue']]);
 			assert.deepEqual(search._parseQuery('key=value&anotherKey=another%20Value'), [['key', 'value'], ['anotherKey', 'another Value']]);
 			assert.deepEqual(search._parseQuery('%3F%3F=1'), [['??', '1']]);
+			assert.deepEqual(search._parseQuery('key+with%2Bplus=value+with%2Bplus'), [['key with+plus', 'value with+plus']]);
 		});
 	});
 })();

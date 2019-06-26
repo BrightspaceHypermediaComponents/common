@@ -532,12 +532,21 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
 			for (var i = 0; i < pairs.length; i++) {
 				var pair = pairs[i].split('=');
-				var decodedKey = window.decodeURIComponent(pair[0]);
-				var decodedValue = pair[1] ? window.decodeURIComponent(pair[1]) : '';
+				var decodedKey = this._urlDecodePlusAsSpace(pair[0]);
+				var decodedValue = this._urlDecodePlusAsSpace(pair[1] || '');
 				query[i] = [decodedKey, decodedValue];
 			}
 		}
 		return query;
+	}
+
+	_urlDecodePlusAsSpace(str) {
+		if (!str) {
+			return str;
+		}
+		var strWithPlusAsSpace = str.replace('+', ' ');
+		var strDecoded = window.decodeURIComponent(strWithPlusAsSpace);
+		return strDecoded;
 	}
 }
 
