@@ -1,16 +1,7 @@
 # d2l-common
-[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/BrightspaceUI/common)
-[![NPM version][npm-image]][npm-url]
 [![Build status][ci-image]][ci-url]
 
 Hypermedia components that can be used against standardized HM route workflows
-
-## Installation
-
-`d2l-common` can be installed from [NPM][npm-url]:
-```shell
-npm install d2l-common
-```
 
 ## Usage
 
@@ -67,7 +58,11 @@ To lint AND run local unit tests:
 npm test
 ```
 
-[npm-url]: https://www.npmjs.org/package/d2l-common
-[npm-image]: https://img.shields.io/npm/v/d2l-common.svg
-[ci-url]: https://travis-ci.org/BrightspaceUI/common
-[ci-image]: https://travis-ci.org/BrightspaceUI/common.svg?branch=master
+## Versioning, Releasing & Deploying
+
+By default, when a pull request is merged the patch version in the `package.json` will be incremented, a tag will be created, and a Github release will be created.
+
+Include `[increment major]`, `[increment minor]` or `[skip version]` in your merge commit message to change the default versioning behavior.
+
+[ci-url]: https://travis-ci.com/BrightspaceHypermediaComponents/common
+[ci-image]: https://travis-ci.com/BrightspaceHypermediaComponents/common.svg?branch=master
