@@ -16,20 +16,20 @@
 				}
 			]
 		},
-    {
-      "name": "apply",
-      "href":"components/d2l-common/demo/d2l-hm-filter/data/11111111-1111-1111-1111-111111111111.json",
-      "fields": [
-        {
-          "class": [
-            "base64",
-            "json"
-          ],
-          "type": "hidden",
-          "name": "existingState"
-        }
-      ]
-    }
+		{
+			"name": "apply",
+			"href":"components/d2l-common/demo/d2l-hm-filter/data/11111111-1111-1111-1111-111111111111.json",
+			"fields": [
+				{
+					"class": [
+						"base64",
+						"json"
+					],
+					"type": "hidden",
+					"name": "existingState"
+				}
+			]
+		}
 	],
 	"entities":[
 		{
