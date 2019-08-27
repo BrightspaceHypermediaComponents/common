@@ -16,7 +16,7 @@
 				}
 			]
 		},
-    {
+		{
 			"name": "apply",
 			"href":"components/d2l-common/demo/d2l-hm-filter/data/22222222-2222-2222-2222-222222222222.json",
 			"fields": [
