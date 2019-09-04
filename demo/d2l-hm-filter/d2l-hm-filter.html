@@ -31,8 +31,6 @@
 		</script>
 
 		<script type="module" src="../../components/d2l-hm-filter/d2l-hm-filter.js"></script>
-		<!-- <script type="module" src="../../components/d2l-hm-filter/generic-list.js"></script> -->
-
 
 		<style>
 			html {
@@ -45,24 +43,10 @@
 			<h3>d2l-hm-filter</h3>
 			<demo-snippet>
 				<template>
-					<!-- <d2l-hm-filter href="data/filters.json" token=""></d2l-hm-filter> -->
-					<!-- <generic-list href="data/filters.json" token=""></generic-list> -->
 					<d2l-hm-filter href="https://324cf935-4245-47cd-8e61-b9033be3bc43.activities.api.dev.brightspace.com/my-unassessed-activities/collections/filters"
 					token="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjViMTFmNWViLTU2MzYtNDhjOS05MDI4LTFhNTFkMTk1MmE1ZSJ9.eyJpc3MiOiJodHRwczovL2FwaS5icmlnaHRzcGFjZS5jb20vYXV0aCIsImF1ZCI6Imh0dHBzOi8vYXBpLmJyaWdodHNwYWNlLmNvbS9hdXRoL3Rva2VuIiwiZXhwIjoxNTY3NjIwNTU2LCJuYmYiOjE1Njc2MTY5NTYsInN1YiI6IjMxNjcxIiwidGVuYW50aWQiOiIzMjRjZjkzNS00MjQ1LTQ3Y2QtOGU2MS1iOTAzM2JlM2JjNDMiLCJhenAiOiJsbXM6MzI0Y2Y5MzUtNDI0NS00N2NkLThlNjEtYjkwMzNiZTNiYzQzIiwic2NvcGUiOiIqOio6KiIsImp0aSI6Ijk5ODU1MWEwLTI5NTgtNDJmMS1hZjA3LTk1MTcyMzc1YWI0NSJ9.aTyb8aeCR27QSFdHBAmqHDgZAef71MItOqY3qgRvrtI637hLaD5oomhzQSUvbkjumssEKu9gLcDImg4tylJ85aVf7-bvBcRP-7mal2g2V25oqF8wqYwCVXxIH_E7v0_jAGFbc-kupaWXFKFnKiApQ82E0vNXVhKjDf1QhXx4xE22jLEZeh90KAh990eghf8-7IO6hLPhs8keBxq9l6HkfkIvohVawtgWKgSJPpky8YjMHqaD8ztUYozQcSiHUVqs04XsKgdxHCGgvOCYUqzRwWXNptY3FKYUOanak8Q7xeXmgnXr9V7IJPHrpHb7UZd2VJtQGQ3IpfrjIrV-Gwpv-g"></d2l-hm-filter>
-					<!-- <generic-list href="https://6df26274-a68c-4219-b3b3-74a2a38e3497.activities.api.dev.brightspace.com/my-unassessed-activities/collections/filters"
-					token="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6ImRlY2YyYTUwLWE4Y2ItNDFhMi1hMDE2LTdjNTc5MTExZGIyNiJ9.eyJpc3MiOiJodHRwczovL2FwaS5icmlnaHRzcGFjZS5jb20vYXV0aCIsImF1ZCI6Imh0dHBzOi8vYXBpLmJyaWdodHNwYWNlLmNvbS9hdXRoL3Rva2VuIiwiZXhwIjoxNTY3NTM2NjQxLCJuYmYiOjE1Njc1MzMwNDEsInN1YiI6IjMxNjcxIiwidGVuYW50aWQiOiI2ZGYyNjI3NC1hNjhjLTQyMTktYjNiMy03NGEyYTM4ZTM0OTciLCJhenAiOiJsbXM6NmRmMjYyNzQtYTY4Yy00MjE5LWIzYjMtNzRhMmEzOGUzNDk3Iiwic2NvcGUiOiIqOio6KiIsImp0aSI6IjFlMGQ3NjljLTFlNTgtNDE5Mi05OGVlLTAxY2VmN2EyMDhkYSJ9.sYZNFFea4EiU-TeuhsHrr-KhMwSAWrvZtGClsnhxTm6nFLna53iarXxjMPL-pI7aGi1BRawQzDKimOp1sAAl9zvSd_LTECud2VzN9w1x-ZPRskecLACMW4ZaT2LK6DMeJF08M8oJG3nzJzE6CJo2nke8mfn_hTh9MOJZcGWVp6lRrolzVdjRIXQ9-IKvU42WwDIqnCDTAic2Ix0Ld3TWCi3gl9Nq6uvIiaHL_ia86Km0HhP9a5y1RKyZXNi86I_ENxWKuNRbSGn6b2mxfsuOxPMX6aRaeTsrxXnnjqmZ3SU1vHcXslkR16nvVjPS4Xc0H7nwm_7RUSDrw6VLiS19PQ"></generic-list> -->
-					<!-- <generic-list href="https://6df26274-a68c-4219-b3b3-74a2a38e3497.activities.api.dev.brightspace.com/my-unassessed-activities/collections"
-					token="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6ImRlY2YyYTUwLWE4Y2ItNDFhMi1hMDE2LTdjNTc5MTExZGIyNiJ9.eyJpc3MiOiJodHRwczovL2FwaS5icmlnaHRzcGFjZS5jb20vYXV0aCIsImF1ZCI6Imh0dHBzOi8vYXBpLmJyaWdodHNwYWNlLmNvbS9hdXRoL3Rva2VuIiwiZXhwIjoxNTY3NTM2NjQxLCJuYmYiOjE1Njc1MzMwNDEsInN1YiI6IjMxNjcxIiwidGVuYW50aWQiOiI2ZGYyNjI3NC1hNjhjLTQyMTktYjNiMy03NGEyYTM4ZTM0OTciLCJhenAiOiJsbXM6NmRmMjYyNzQtYTY4Yy00MjE5LWIzYjMtNzRhMmEzOGUzNDk3Iiwic2NvcGUiOiIqOio6KiIsImp0aSI6IjFlMGQ3NjljLTFlNTgtNDE5Mi05OGVlLTAxY2VmN2EyMDhkYSJ9.sYZNFFea4EiU-TeuhsHrr-KhMwSAWrvZtGClsnhxTm6nFLna53iarXxjMPL-pI7aGi1BRawQzDKimOp1sAAl9zvSd_LTECud2VzN9w1x-ZPRskecLACMW4ZaT2LK6DMeJF08M8oJG3nzJzE6CJo2nke8mfn_hTh9MOJZcGWVp6lRrolzVdjRIXQ9-IKvU42WwDIqnCDTAic2Ix0Ld3TWCi3gl9Nq6uvIiaHL_ia86Km0HhP9a5y1RKyZXNi86I_ENxWKuNRbSGn6b2mxfsuOxPMX6aRaeTsrxXnnjqmZ3SU1vHcXslkR16nvVjPS4Xc0H7nwm_7RUSDrw6VLiS19PQ"></generic-list> -->
 				</template>
 			</demo-snippet>
-
-
-			<!-- <h3>d2l-hm-filter (with filters selected)</h3>
-			<demo-snippet>
-				<template>
-					<d2l-hm-filter href="data/filters-on.json" token=""></d2l-hm-filter>
-				</template>
-			</demo-snippet> -->
 		</div>
 	</body>
 	<script type="module">

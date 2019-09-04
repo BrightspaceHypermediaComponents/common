@@ -18,8 +18,6 @@ import "d2l-menu/d2l-menu-item-checkbox.js"
 class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.EntityBehavior, D2L.PolymerBehaviors.Siren.SirenActionBehavior], PolymerElement) {
 	static get template() {
 		return html`
-		<!-- <d2l-filter-dropdown></d2l-filter-dropdown> -->
-
 		<d2l-filter-dropdown  total-selected-option-count="[[totalSelectedCount]]">
 			<dom-repeat items="[[_filters]]" as="c">
 				<template>
@@ -80,10 +78,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				type: Object,
 				value: {}
 			},
-			_dropdown: {
-				type: Object,
-				value: {}
-			},
 			_selectedCategory: {
 				type: String
 			}
@@ -135,21 +129,12 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _loadFilters(entity) {
-		// var tempResponse = window.D2L.Siren.EntityStore.fetch("data/11111111-1111-1111-1111-111111111111.json",
-		// 	"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6ImVmZTA3YWNkLTk5MTktNDk1Mi1iNzVlLTExODA0N2JiYWRlYyJ9.eyJpc3MiOiJodHRwczovL2FwaS5icmlnaHRzcGFjZS5jb20vYXV0aCIsImF1ZCI6Imh0dHBzOi8vYXBpLmJyaWdodHNwYWNlLmNvbS9hdXRoL3Rva2VuIiwiZXhwIjoxNTY2OTIzODU1LCJuYmYiOjE1NjY5MjAyNTUsInN1YiI6IjMxNjcxIiwidGVuYW50aWQiOiJmMjA4NTBmOS0wNmQxLTRlNzgtYTQwNS05Y2I3MjlhZmVlYjkiLCJhenAiOiJsbXM6ZjIwODUwZjktMDZkMS00ZTc4LWE0MDUtOWNiNzI5YWZlZWI5Iiwic2NvcGUiOiIqOio6KiIsImp0aSI6ImI1MTI1MDhmLTYxOWEtNGMzZC05NTIzLTgyOTE1OTMzNzI3NyJ9.jaLhWEaACMZQhu_jqU1Y5orWZ4x6YdmvjhrP1J9T-MYrfuUhwzxu7Y40Gx-H3tx3uNDK1l2s0oAAm_eVjZrASmWaw6rAxEwuojiMQCIHiywjBiW_AFY843jplsHakwkAoo-_IIHByw47sbx2XAiaiY32rwngSjXd6-mWQyy8vAbw_63LDIkdn9Rmaxtj60pAXOjvNhpkUixQ1YOpFLVpmyA8NX2JK_p4HPfQ4269qe7S6mi0n-Fmy3U4srapq14CC2UI-eE3uDf3u52VNbaYXcUZeGVLwyxRwYGQQsooV5Dobp82TwARazzJVj2T1pdrpl1y3ggAnG-INKAdhla0UQ", this.disableEntityCache);
-		// tempResponse.then((response)=> {
-		// 	console.log("response: ", response);
-		// });
-		// console.log("_loadFilters, tempResponse: ", tempResponse);
-		// console.log("_loadFilters, entity changed", entity);
 		if (!entity) {
 			return Promise.resolve();
 		}
 		try {
 			this._clearAction = this._getAction(entity, 'clear');
 			await this._parseFilters(entity);
-			this._dropdown = this._getFilterDropdown();
-			this._populateFilterDropdown();
 			this._dispatchFiltersLoaded();
 		} catch (err) {
 			// Unable to get actions and/or filters.
@@ -160,23 +145,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	_getFilterDropdown() {
 		return this.shadowRoot.querySelector('d2l-filter-dropdown');
-	}
-
-	_populateFilterDropdown(filter) {
-		console.log("_populateFilterDropdown, filter", filter, "this._filters", this._filters);
-		return;
-		if (filter) {
-			filter.options.forEach(function(o) {
-				this._dropdown.addFilterOption(filter.key, o.key, o.title, o.selected);
-			}.bind(this));
-		} else {
-			this._filters.forEach(function(f) {
-				this._dropdown.addFilterCategory(f.key, f.title, f.startingApplied);
-				f.options.forEach(function(o) {
-					this._dropdown.addFilterOption(f.key, o.key, o.title, o.selected);
-				}.bind(this));
-			}.bind(this));
-		}
 	}
 
 	_shouldApplyWhitelist() {
@@ -211,8 +179,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				});
 			} else {
 				for (let i = 0; i < entity.entities.length; i++) {
-					// console.log("_parseEntityToFilter, subentitiy", entity.entities[i],
-					// "parsed result", this._parseEntityToFilter(entity.entities[i], entity.properties.applied));
 					filters.push(this._parseEntityToFilter(entity.entities[i], entity.properties.applied));
 				}
 			}
@@ -249,7 +215,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_getOptionStatusFromClasses(classes) {
-		// console.log("_getOptionStatusFromClasses, classes:", classes);
 		return !!(this._findInArray(classes, c => c === 'on'));
 	}
 
@@ -259,7 +224,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleOptionsChanged(e) {
-		console.log("all options changed!!");
 		this._dispatchFiltersUpdating();
 		const applied = await this._toggleFilterOptions(e.detail.selectedFilters);
 		this._dispatchFiltersUpdated(applied);
@@ -276,11 +240,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleOptionChanged(e) {
-		console.log("some options changed, not all of them tho");
-		// console.log("_handleOptionChanged, this._filters", this._filters);
-		// console.log("_handleOptionChanged, e.detail.categoryKey", e.detail.categoryKey, "e.detail.menuItemKey", e.detail.menuItemKey);
 		const option = this._getFilterOptionByKey(e.detail.categoryKey, e.detail.menuItemKey);
-		// console.log("_handleOptionChanged, option", option);
 		if (option && option.selected !== e.detail.newValue) {
 			this._dispatchFiltersUpdating();
 			const filter = this._getFilterCategoryByKey(e.detail.categoryKey);
@@ -309,13 +269,10 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleSelectedFilterCategoryChanged(e) {
-		// console.log("_handleSelectedFilterCategoryChanged, e.detail.categoryKey: ", e.detail.categoryKey);
-		// console.log("_handleSelectedFilterCategoryChanged, this._filters", this._filters);
 		const filter = this._findInArray(this._filters, f => f.key === e.detail.categoryKey);
 		this._selectedCategory = e.detail.categoryKey;
 		if (!filter.loaded) {
 			filter.options = await this._getFilterOptions(filter.href, filter.key);
-			this._populateFilterDropdown(filter);
 			filter.loaded = true;
 			this.notifyPath(`_filters.${this._filters.findIndex(f => f.key === e.detail.categoryKey)}.options`);
 		}
@@ -396,8 +353,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _apply(entity, customParams) {
-		// console.log("_apply, entity: ", entity, "customParams:", customParams);
-		// console.log("action: ", this._getAction(entity, 'apply'));
 		try {
 			return await this._performSirenActionWithQueryParams(this._getAction(entity, 'apply'), customParams);
 		} catch (err) {
@@ -409,9 +364,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _toggleOption(filter, option) {
 		let result = null;
 		try {
-			console.log("option.toggleAction", option.toggleAction);
 			result = await this._performSirenActionWithQueryParams(option.toggleAction);
-			// console.log("result", result);
 			option.selected = !option.selected;
 			this._updateToggleActions(result, filter);
 		} catch (err) {
@@ -517,7 +470,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_dispatchFiltersUpdated(filtered) {
-		console.log("_dispatchFiltersUpdated", this._filters.map(c=>c.options.map(o=>o.toggleAction.fields[0].value)));
 
 		this.dispatchEvent(
 			new CustomEvent(
