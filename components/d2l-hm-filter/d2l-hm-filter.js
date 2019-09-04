@@ -3,6 +3,8 @@ import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
 import 'd2l-facet-filter-sort/components/d2l-filter-dropdown/d2l-filter-dropdown.js';
 import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
 import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
+import "d2l-facet-filter-sort/components/d2l-filter-dropdown/d2l-filter-dropdown-category.js"
+import "d2l-menu/d2l-menu-item-checkbox.js"
 
 /**
  * `d2l-hm-filter`
@@ -16,7 +18,21 @@ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
 class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.EntityBehavior, D2L.PolymerBehaviors.Siren.SirenActionBehavior], PolymerElement) {
 	static get template() {
 		return html`
-		<d2l-filter-dropdown></d2l-filter-dropdown>
+		<!-- <d2l-filter-dropdown></d2l-filter-dropdown> -->
+
+		<d2l-filter-dropdown  total-selected-option-count="[[totalSelectedCount]]">
+			<dom-repeat items="[[_filters]]" as="c">
+				<template>
+					<d2l-filter-dropdown-category key="[[c.key]]" category-text="[[c.title]]" selected-option-count="[[_calculateCategoryCount(c.selectedCount)]]">
+						<dom-repeat items="[[c.options]]" as="o">
+							<template>
+								<d2l-menu-item-checkbox text="[[o.title]]" value="[[o.key]]" selected="[[o.selected]]"></d2l-menu-item-checkbox>
+							</template>
+						</dom-repeat>
+					</d2l-filter-dropdown-category>
+				</template>
+			</dom-repeat>
+		</d2l-filter-dropdown>
 		`;
 	}
 	static get is() { return 'd2l-hm-filter'; }
@@ -34,6 +50,10 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				type: Number,
 				value: undefined,
 				reflectToAttribute: true
+			},
+			totalSelectedCount: {
+				type: Number,
+				value: 0,
 			},
 			_filters: {
 				type: Array,
@@ -71,27 +91,27 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 	static get observers() {
 		return [
-			'_loadFilters(entity)'
+			'_loadFilters(entity)',
 		];
 	}
 
 	attached() {
 		if (this.delayedFilter) {
-			this.addEventListener('d2l-filter-dropdown-closed', this._handleOptionsChanged);
+			this.addEventListener('d2l-filter-dropdown-close', this._handleOptionsChanged);
 		} else {
-			this.addEventListener('d2l-filter-dropdown-option-changed', this._handleOptionChanged);
+			this.addEventListener('d2l-filter-dropdown-menu-item-change', this._handleOptionChanged);
 		}
-		this.addEventListener('d2l-filter-selected-changed', this._handleSelectedFilterCategoryChanged);
+		this.addEventListener('d2l-filter-dropdown-category-selected', this._handleSelectedFilterCategoryChanged);
 		this.addEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
 	detached() {
 		if (this.delayedFilter) {
-			this.removeEventListener('d2l-filter-dropdown-closed', this._handleOptionsChanged);
+			this.removeEventListener('d2l-filter-dropdown-close', this._handleOptionsChanged);
 		} else {
-			this.removeEventListener('d2l-filter-dropdown-option-changed', this._handleOptionChanged);
+			this.removeEventListener('d2l-filter-dropdown-menu-item-change', this._handleOptionChanged);
 		}
-		this.removeEventListener('d2l-filter-selected-changed', this._handleSelectedFilterCategoryChanged);
+		this.removeEventListener('d2l-filter-dropdown-category-selected', this._handleSelectedFilterCategoryChanged);
 		this.removeEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
@@ -115,6 +135,13 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _loadFilters(entity) {
+		// var tempResponse = window.D2L.Siren.EntityStore.fetch("data/11111111-1111-1111-1111-111111111111.json",
+		// 	"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6ImVmZTA3YWNkLTk5MTktNDk1Mi1iNzVlLTExODA0N2JiYWRlYyJ9.eyJpc3MiOiJodHRwczovL2FwaS5icmlnaHRzcGFjZS5jb20vYXV0aCIsImF1ZCI6Imh0dHBzOi8vYXBpLmJyaWdodHNwYWNlLmNvbS9hdXRoL3Rva2VuIiwiZXhwIjoxNTY2OTIzODU1LCJuYmYiOjE1NjY5MjAyNTUsInN1YiI6IjMxNjcxIiwidGVuYW50aWQiOiJmMjA4NTBmOS0wNmQxLTRlNzgtYTQwNS05Y2I3MjlhZmVlYjkiLCJhenAiOiJsbXM6ZjIwODUwZjktMDZkMS00ZTc4LWE0MDUtOWNiNzI5YWZlZWI5Iiwic2NvcGUiOiIqOio6KiIsImp0aSI6ImI1MTI1MDhmLTYxOWEtNGMzZC05NTIzLTgyOTE1OTMzNzI3NyJ9.jaLhWEaACMZQhu_jqU1Y5orWZ4x6YdmvjhrP1J9T-MYrfuUhwzxu7Y40Gx-H3tx3uNDK1l2s0oAAm_eVjZrASmWaw6rAxEwuojiMQCIHiywjBiW_AFY843jplsHakwkAoo-_IIHByw47sbx2XAiaiY32rwngSjXd6-mWQyy8vAbw_63LDIkdn9Rmaxtj60pAXOjvNhpkUixQ1YOpFLVpmyA8NX2JK_p4HPfQ4269qe7S6mi0n-Fmy3U4srapq14CC2UI-eE3uDf3u52VNbaYXcUZeGVLwyxRwYGQQsooV5Dobp82TwARazzJVj2T1pdrpl1y3ggAnG-INKAdhla0UQ", this.disableEntityCache);
+		// tempResponse.then((response)=> {
+		// 	console.log("response: ", response);
+		// });
+		// console.log("_loadFilters, tempResponse: ", tempResponse);
+		// console.log("_loadFilters, entity changed", entity);
 		if (!entity) {
 			return Promise.resolve();
 		}
@@ -136,6 +163,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_populateFilterDropdown(filter) {
+		console.log("_populateFilterDropdown, filter", filter, "this._filters", this._filters);
+		return;
 		if (filter) {
 			filter.options.forEach(function(o) {
 				this._dropdown.addFilterOption(filter.key, o.key, o.title, o.selected);
@@ -160,6 +189,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			return {
 				key: key,
 				startingApplied: numApplied[key] || 0,
+				selectedCount: 0,
 				title: entity.title,
 				href: entity.href,
 				loaded: false,
@@ -181,6 +211,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				});
 			} else {
 				for (let i = 0; i < entity.entities.length; i++) {
+					// console.log("_parseEntityToFilter, subentitiy", entity.entities[i],
+					// "parsed result", this._parseEntityToFilter(entity.entities[i], entity.properties.applied));
 					filters.push(this._parseEntityToFilter(entity.entities[i], entity.properties.applied));
 				}
 			}
@@ -217,6 +249,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_getOptionStatusFromClasses(classes) {
+		// console.log("_getOptionStatusFromClasses, classes:", classes);
 		return !!(this._findInArray(classes, c => c === 'on'));
 	}
 
@@ -226,17 +259,39 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleOptionsChanged(e) {
+		console.log("all options changed!!");
 		this._dispatchFiltersUpdating();
 		const applied = await this._toggleFilterOptions(e.detail.selectedFilters);
 		this._dispatchFiltersUpdated(applied);
 	}
 
+	_calculateCategoryCount(selectedCount) {
+		return selectedCount || 0;
+	}
+
+	_calculateTotalCount() {
+		return this._filters.reduce((total, filter)=> {
+			return total + this._calculateCategoryCount(filter.selectedCount);
+		}, 0);
+	}
+
 	async _handleOptionChanged(e) {
-		const option = this._getFilterOptionByKey(e.detail.categoryKey, e.detail.optionKey);
+		console.log("some options changed, not all of them tho");
+		// console.log("_handleOptionChanged, this._filters", this._filters);
+		// console.log("_handleOptionChanged, e.detail.categoryKey", e.detail.categoryKey, "e.detail.menuItemKey", e.detail.menuItemKey);
+		const option = this._getFilterOptionByKey(e.detail.categoryKey, e.detail.menuItemKey);
+		// console.log("_handleOptionChanged, option", option);
 		if (option && option.selected !== e.detail.newValue) {
 			this._dispatchFiltersUpdating();
 			const filter = this._getFilterCategoryByKey(e.detail.categoryKey);
 			const apply = await this._toggleOption(filter, option);
+			if (option.selected) {
+				this.set(`_filters.${this._filters.findIndex(f => f.key === e.detail.categoryKey)}.selectedCount`, filter.selectedCount+1 || 1);
+				this.set("totalSelectedCount", this.totalSelectedCount+1);
+			} else {
+				this.set(`_filters.${this._filters.findIndex(f => f.key === e.detail.categoryKey)}.selectedCount`, filter.selectedCount-1 || 0);
+				this.set("totalSelectedCount", this.totalSelectedCount-1);
+			}
 			if (apply) {
 				filter.clearAction = this._getAction(apply, 'clear');
 				const applyAll = await this._apply(apply);
@@ -254,12 +309,15 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleSelectedFilterCategoryChanged(e) {
-		const filter = this._findInArray(this._filters, f => f.key === e.detail.selectedKey);
-		this._selectedCategory = e.detail.selectedKey;
+		// console.log("_handleSelectedFilterCategoryChanged, e.detail.categoryKey: ", e.detail.categoryKey);
+		// console.log("_handleSelectedFilterCategoryChanged, this._filters", this._filters);
+		const filter = this._findInArray(this._filters, f => f.key === e.detail.categoryKey);
+		this._selectedCategory = e.detail.categoryKey;
 		if (!filter.loaded) {
 			filter.options = await this._getFilterOptions(filter.href, filter.key);
 			this._populateFilterDropdown(filter);
 			filter.loaded = true;
+			this.notifyPath(`_filters.${this._filters.findIndex(f => f.key === e.detail.categoryKey)}.options`);
 		}
 	}
 
@@ -314,7 +372,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 					let apply = null;
 					for (let i = 0; i < f.options.length; i++) {
 						const o = f.options[i];
-						const optionShouldBeSelected = this._findInArray(activatedOptions, ao => ao.categoryKey === f.key && ao.optionKey === o.key);
+						const optionShouldBeSelected = this._findInArray(activatedOptions, ao => ao.categoryKey === f.key && ao.menuItemKey === o.key);
 						// XOR
 						if (!(optionShouldBeSelected) !== !o.selected) {
 							apply = await this._toggleOption(f, o);
@@ -338,6 +396,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _apply(entity, customParams) {
+		// console.log("_apply, entity: ", entity, "customParams:", customParams);
+		// console.log("action: ", this._getAction(entity, 'apply'));
 		try {
 			return await this._performSirenActionWithQueryParams(this._getAction(entity, 'apply'), customParams);
 		} catch (err) {
@@ -349,7 +409,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _toggleOption(filter, option) {
 		let result = null;
 		try {
+			console.log("option.toggleAction", option.toggleAction);
 			result = await this._performSirenActionWithQueryParams(option.toggleAction);
+			// console.log("result", result);
 			option.selected = !option.selected;
 			this._updateToggleActions(result, filter);
 		} catch (err) {
@@ -381,6 +443,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			f.options.forEach(o => {
 				o.selected = false;
 			});
+			this.totalSelectedCount = 0;
 		});
 
 		const customParams = this._getCustomPageSizeParams();
@@ -454,6 +517,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_dispatchFiltersUpdated(filtered) {
+		console.log("_dispatchFiltersUpdated", this._filters.map(c=>c.options.map(o=>o.toggleAction.fields[0].value)));
+
 		this.dispatchEvent(
 			new CustomEvent(
 				'd2l-hm-filter-filters-updated',
