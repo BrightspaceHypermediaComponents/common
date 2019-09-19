@@ -29,6 +29,14 @@
 		test('instantiating the element works', function() {
 			assert.equal('d2l-hm-search', search.tagName.toLowerCase());
 		});
+		test('when we set an initial value it does not fire an event', (done) => {
+			search.addEventListener('d2l-hm-search-results-loading', done);
+			search.addEventListener('d2l-hm-search-results-loaded', done);
+			search.addEventListener('d2l-hm-search-error', done);
+
+			search.initialValue = 'fire';
+			done();
+		});
 		test('when we search, an event is sent with the search results', (done) => {
 			const  performActionStub = _stubPerformSirenAction();
 			search.addEventListener('d2l-hm-search-results-loaded', function(e) {
