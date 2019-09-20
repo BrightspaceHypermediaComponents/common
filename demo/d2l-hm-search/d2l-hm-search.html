@@ -43,9 +43,23 @@
 			<h3>d2l-hm-search</h3>
 			<demo-snippet>
 				<template>
-					<d2l-hm-search></d2l-hm-search>
+					<d2l-hm-search initial-value="brightspace"></d2l-hm-search>
 				</template>
 			</demo-snippet>
 		</div>
+		<script type="module">
+			document.body.addEventListener('d2l-hm-search-results-loading', function(e) {
+				// eslint-disable-next-line no-console
+				console.log('d2l-hm-search-results-loading', e);
+			});
+			document.body.addEventListener('d2l-hm-search-results-loaded', function(e) {
+				// eslint-disable-next-line no-console
+				console.log('d2l-hm-search-results-loaded', e);
+			});
+			document.body.addEventListener('d2l-hm-search-error', function(e) {
+				// eslint-disable-next-line no-console
+				console.log('d2l-hm-search-error', e);
+			});
+		</script>
 	</body>
 </html>
