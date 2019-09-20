@@ -14,7 +14,7 @@
     "type": "git",
     "url": "https://github.com/BrightspaceUI/common.git"
   },
-  "version": "2.10.2",
+  "version": "2.10.3",
   "author": "D2L Corporation",
   "license": "Apache-2.0",
   "devDependencies": {
