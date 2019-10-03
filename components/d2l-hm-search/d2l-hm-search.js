@@ -15,7 +15,7 @@ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
 class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.SirenActionBehavior], PolymerElement) {
 	static get template() {
 		return html `
-		<d2l-input-search placeholder="[[placeholder]]" value="[[initialValue]]"></d2l-input-search>
+		<d2l-input-search placeholder="[[placeholder]]" value="[[initialValue]]" label="[[label]]"></d2l-input-search>
 		`;
 	}
 	static get is() { return 'd2l-hm-search'; }
@@ -35,6 +35,9 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 				reflectToAttribute: true
 			},
 			initialValue: {
+				type: String
+			},
+			label: {
 				type: String
 			}
 		};
