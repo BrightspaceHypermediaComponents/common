@@ -84,7 +84,7 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 		expectedFilters[f].loaded = true;
 	}
 
-	function _resetExpected() {
+	function _resetExpected(lazy) {
 		expectedFilters = [];
 		for (let i = 1; i <= 3; i++) {
 			const key = _getKeyGuid(i);
@@ -98,7 +98,9 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 				options: []
 			});
 		}
-		_addExpectedOptions(0);
+		if (!lazy) {
+			_addExpectedOptions(0);
+		}
 	}
 
 	suite('d2l-hm-filter', function() {
@@ -476,6 +478,24 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 				const customPageSizeParams = filter._getCustomPageSizeParams();
 				assert.deepEqual(testCase[1], customPageSizeParams);
 			});
+		});
+	});
+
+	suite('d2l-hm-filter lazy', function() {
+		setup(function() {
+			filter = fixture('lazy');
+			_resetExpected(true);
+		});
+		test('filters are imported correctly', async() => {
+			await loadFilters('data/filters.json');
+			assert.equal(expectedFilters.length, filter._filters.length);
+			_assertFiltersEqualGiven(expectedFilters, filter._filters);
+		});
+		test('_selectedCategory loads on first dropdown open', async() => {
+			await loadFilters('data/filters.json');
+			await filter._handleDropdownOpened();
+			_addExpectedOptions(0);
+			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
 	});
 })();
