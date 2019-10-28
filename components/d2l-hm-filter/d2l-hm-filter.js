@@ -277,7 +277,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	async _handleSelectedFilterCategoryChanged(e) {
-		const filter = this._findInArray(this._filters, f => f.key === e.detail.selectedKey);
 		this._selectedCategory = e.detail.selectedKey;
 		if (this._initialLoad) {
 			this._initialLoad = false;
@@ -285,6 +284,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				return;
 			}
 		}
+		const filter = this._findInArray(this._filters, f => f.key === e.detail.selectedKey);
 		if (!filter.loaded) {
 			filter.options = await this._getFilterOptions(filter.href, filter.key);
 			this._populateFilterDropdown(filter);
