@@ -71,9 +71,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			_selectedCategory: {
 				type: String
 			},
-			_initialLoad: {
+			_shouldLoadOptions: {
 				type: Boolean,
-				value: true
+				value: false
 			}
 		};
 	}
@@ -199,7 +199,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				}
 			}
 			if (filters && filters.length) {
-				if (!this.lazyLoadOptions) {
+				if (!this.lazyLoadOptions || this._shouldLoadOptions) {
 					var selectedFilterIndex = this._selectedCategory ? this._getCategoryIndexFromKey(filters, this._selectedCategory) : 0;
 
 					// The other filters are lazily loaded when their tab is opened for the first time.
@@ -249,7 +249,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	async _handleDropdownOpened() {
 		if (this.lazyLoadOptions && this._filters && this._filters.length) {
-			this._initialLoad = false;
+			this._shouldLoadOptions = true;
 			await this._handleSelectedFilterCategoryChanged({detail: {selectedKey: this._selectedCategory || this._filters[0].key}});
 		}
 	}
@@ -278,8 +278,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	async _handleSelectedFilterCategoryChanged(e) {
 		this._selectedCategory = e.detail.selectedKey;
-		if (this._initialLoad) {
-			this._initialLoad = false;
+		if (!this._shouldLoadOptions) {
+			this._shouldLoadOptions = true;
 			if (this.lazyLoadOptions) {
 				return;
 			}
