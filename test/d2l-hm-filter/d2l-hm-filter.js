@@ -92,7 +92,7 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 				key: key,
 				title: `By Filter Category ${i}`,
 				href: `data/${key}.json`,
-				startingApplied: 0,
+				numOptionsSelected: 0,
 				loaded: false,
 				clearAction: null,
 				options: []
@@ -120,15 +120,15 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 			assert.equal(expectedFilters.length, filter._filters.length);
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
-		test('whitelist filters and sorts available filters', async() => {
-			const whiteList = ['33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111'];
-			filter.categoryWhitelist = whiteList;
+		test('includelist filters respected and sorts available filters', async() => {
+			const includeList = ['33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111'];
+			filter.categoryIncludeList = includeList;
 			await loadFilters('data/filters.json');
-			assert.equal(whiteList.length, filter._filters.length);
-			expectedFilters = expectedFilters.filter(ef => whiteList.indexOf(ef.key) >= 0);
+			assert.equal(includeList.length, filter._filters.length);
+			expectedFilters = expectedFilters.filter(ef => includeList.indexOf(ef.key) >= 0);
 			expectedFilters = expectedFilters.sort((a, b) => {
-				var a1 = whiteList.indexOf(a.key);
-				var b1 = whiteList.indexOf(b.key);
+				var a1 = includeList.indexOf(a.key);
+				var b1 = includeList.indexOf(b.key);
 				if (a1 > b1) { return 1; }
 				if (b1 > a1) { return -1; }
 				return 0;
@@ -146,17 +146,17 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 		test('switching to a new tab loads new filter options', async() => {
 			await loadFilters('data/filters.json');
 			const tFilter = 1;
-			await filter._handleSelectedFilterCategoryChanged({detail: { selectedKey: expectedFilters[tFilter].key }});
+			await filter._handleFilterCategorySelected({detail: { categoryKey: expectedFilters[tFilter].key }});
 			_addExpectedOptions(tFilter);
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
 		test('switching to an already selected tab does not reload filter options', async() => {
 			await loadFilters('data/filters.json');
 			const tFilter = 1;
-			await filter._handleSelectedFilterCategoryChanged({detail: { selectedKey: expectedFilters[tFilter].key }});
+			await filter._handleFilterCategorySelected({detail: { categoryKey: expectedFilters[tFilter].key }});
 			_addExpectedOptions(tFilter);
 			const getSpy = sinon.spy(filter, '_getFilterOptions');
-			await filter._handleSelectedFilterCategoryChanged({detail: { selectedKey: expectedFilters[0].key }});
+			await filter._handleFilterCategorySelected({detail: { categoryKey: expectedFilters[0].key }});
 			assert.equal(0, getSpy.callCount);
 			getSpy.restore();
 		});
@@ -166,17 +166,20 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 			await loadFilters('data/filters.json');
 			const fetchStub = await _toggleOption(tFilter, tOption);
 			fetchStub.restore();
+			expectedFilters[tFilter].numOptionsSelected++;
 			expectedFilters[tFilter].options[tOption].selected = true;
 			expectedFilters[tFilter].options[tOption].toggleAction.name = 'remove-filter';
 			_assertFiltersEqualGiven(expectedFilters, filter._filters);
 		});
 		test('toggling multiple options works correctly', async() => {
 			await loadFilters('data/filters.json');
-			await filter._handleSelectedFilterCategoryChanged({detail: { selectedKey: expectedFilters[1].key }});
+			await filter._handleFilterCategorySelected({detail: { categoryKey: expectedFilters[1].key }});
 			let fetchStub = await _toggleOption(0, 0);
 			fetchStub = await _toggleOption(1, 0, fetchStub);
 			fetchStub.restore();
 			_addExpectedOptions(1);
+			expectedFilters[0].numOptionsSelected++;
+			expectedFilters[1].numOptionsSelected++;
 			expectedFilters[0].options[0].selected = true;
 			expectedFilters[1].options[0].selected = true;
 			expectedFilters[0].options[0].toggleAction.name = 'remove-filter';
@@ -220,7 +223,7 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 			loadFilters('data/filters.json').then(function() {
 				fetchStub = sinon.stub(window.d2lfetch, 'fetch');
 				fetchStub.withArgs(`${window.location.origin}/data/11111111-1111-1111-1111-111111111111.json?n=e&existingState=`, sinon.match.any).returns(_fetchPromise(window.D2LHMFilterTestFixtures['toggled_filters_category_1_result']));
-				filter._handleOptionChanged({detail: {categoryKey: '11111111-1111-1111-1111-111111111111', optionKey: '1'}});
+				filter._handleOptionChanged({detail: {categoryKey: '11111111-1111-1111-1111-111111111111', menuItemKey: '1'}});
 			});
 		});
 		test('when we select the clear button, an event is sent to let the consumer know we are updating', (done) => {
