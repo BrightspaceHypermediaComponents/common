@@ -50,7 +50,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				type: Boolean,
 				value: false
 			},
-			categoryWhitelist: {
+			categoryIncludeList: {
 				type: Array,
 				value: []
 			},
@@ -170,8 +170,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
-	_shouldApplyWhitelist() {
-		return this.categoryWhitelist && this.categoryWhitelist.length;
+	_shouldApplyIncludeList() {
+		return this.categoryIncludeList && this.categoryIncludeList.length;
 	}
 
 	_parseEntityToFilter(entity, numApplied) {
@@ -193,8 +193,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _parseFilters(entity) {
 		if (entity) {
 			const filters = [];
-			if (this._shouldApplyWhitelist()) {
-				this.categoryWhitelist.forEach(cw => {
+			if (this._shouldApplyIncludeList()) {
+				this.categoryIncludeList.forEach(cw => {
 					const found = this._findInArray(entity.entities, e => e.href.indexOf(cw) >= 0);
 					if (found) {
 						filters.push(this._parseEntityToFilter(found, entity.properties.applied));
