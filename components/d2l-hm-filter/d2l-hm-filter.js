@@ -29,6 +29,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 						<dom-repeat items="[[category.options]]" as="option">
 							<template>
 								<d2l-filter-dropdown-option
+									hidden$="[[option.hidden]]"
 									selected="[[option.selected]]"
 									text="[[option.title]]"
 									value="[[option.key]]">
@@ -74,6 +75,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 					// 	clearAction: {},
 					// 	options: [
 					// 		{
+					// 			hidden: false,
 					// 			key: '',
 					// 			title: '',
 					// 			selected: '',
@@ -116,6 +118,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			this.addEventListener('d2l-dropdown-open', this._handleDropdownOpened);
 		}
 		this.addEventListener('d2l-filter-dropdown-category-selected', this._handleFilterCategorySelected);
+		this.addEventListener('d2l-filter-dropdown-category-searched', this._handleFilterCategorySearched);
 		this.addEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
@@ -129,6 +132,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			this.removeEventListener('d2l-dropdown-open', this._handleDropdownOpened);
 		}
 		this.removeEventListener('d2l-filter-dropdown-category-selected', this._handleFilterCategorySelected);
+		this.removeEventListener('d2l-filter-dropdown-category-searched', this._handleFilterCategorySearched);
 		this.removeEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
@@ -295,6 +299,24 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			const options = await this._getFilterOptions(filter.href, filter.key);
 			this.set(`_filters.${filterIndex}.options`, options);
 			filter.loaded = true;
+		}
+	}
+
+	_handleFilterCategorySearched(e) {
+		for (var i = 0; i < this._filters.length; i++) {
+			if (this._filters[i].key === e.detail.categoryKey) {
+				for (var j = 0; j < this._filters[i].options.length; j++) {
+					if (e.detail.value === '') {
+						this.set(`_filters.${i}.options.${j}.hidden`, false);
+					} else {
+						if (this._filters[i].options[j].title.toLowerCase().indexOf(e.detail.value.toLowerCase()) > -1) {
+							this.set(`_filters.${i}.options.${j}.hidden`, false);
+						} else {
+							this.set(`_filters.${i}.options.${j}.hidden`, true);
+						}
+					}
+				}
+			}
 		}
 	}
 
