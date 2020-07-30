@@ -14,6 +14,20 @@
 					"value":""
 				}
 			]
+		},
+		{
+			"name": "apply",
+			"href":"components/d2l-common/demo/d2l-hm-filter/data/filters.json",
+			"fields": [
+				{
+					"class": [
+						"base64",
+						"json"
+					],
+					"type": "hidden",
+					"name": "existingState"
+				}
+			]
 		}
 	],
 	"properties": {
