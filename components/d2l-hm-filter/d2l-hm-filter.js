@@ -193,6 +193,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _parseFilters(entity) {
 		if (entity) {
 			const filters = [];
+			this._totalSelectedCount = 0;
 			if (this._shouldApplyIncludeList()) {
 				this.categoryIncludeList.forEach(cw => {
 					const found = this._findInArray(entity.entities, e => e.href.indexOf(cw) >= 0);
