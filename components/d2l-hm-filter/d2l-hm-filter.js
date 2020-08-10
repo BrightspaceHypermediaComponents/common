@@ -208,7 +208,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 			}
 			if (filters && filters.length) {
 				if (!this.lazyLoadOptions || this._shouldLoadOptions) {
-					var selectedFilterIndex = this._selectedCategory ? this._getCategoryIndexFromKey(filters, this._selectedCategory) : 0;
+					const selectedFilterIndex = this._selectedCategory ? this._getCategoryIndexFromKey(filters, this._selectedCategory) : 0;
 
 					// The other filters are lazily loaded when their tab is opened for the first time.
 					filters[selectedFilterIndex].options = await this._getFilterOptions(filters[selectedFilterIndex].href, filters[selectedFilterIndex].key);
@@ -232,7 +232,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_getCategoryIndexFromKey(filters, key) {
-		for (var i = 0 ; i < filters.length; i++) {
+		for (let i = 0 ; i < filters.length; i++) {
 			if (filters[i].key === key) {
 				return i;
 			}
@@ -304,9 +304,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_handleFilterCategorySearched(e) {
-		for (var i = 0; i < this._filters.length; i++) {
+		for (let i = 0; i < this._filters.length; i++) {
 			if (this._filters[i].key === e.detail.categoryKey) {
-				for (var j = 0; j < this._filters[i].options.length; j++) {
+				for (let j = 0; j < this._filters[i].options.length; j++) {
 					if (e.detail.value === '') {
 						this.set(`_filters.${i}.options.${j}.hidden`, false);
 					} else {
@@ -366,7 +366,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 					this._updateToggleActions(cleared, f);
 					this._totalSelectedCount -= f.numOptionsSelected;
 					this.set(`_filters.${j}.numOptionsSelected`, 0);
-					for (var i = 0; i < this._filters[j].options.length; i++) {
+					for (let i = 0; i < this._filters[j].options.length; i++) {
 						this.set(`_filters.${j}.options.${i}.selected`, false);
 					}
 					applyAll = await this._apply(cleared);
@@ -445,9 +445,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				this._updateToggleActions(filterEntity.entity, f);
 			}
 		}
-		for (var i = 0; i < this._filters.length; i++) {
+		for (let i = 0; i < this._filters.length; i++) {
 			this.set(`_filters.${i}.numOptionsSelected`, 0);
-			for (var j = 0; j < this._filters[i].options.length; j++) {
+			for (let j = 0; j < this._filters[i].options.length; j++) {
 				this.set(`_filters.${i}.options.${j}.selected`, false);
 			}
 		}
@@ -496,11 +496,11 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_getAllSelectedOptions() {
-		var result = [];
+		const result = [];
 		const categories = this.shadowRoot.querySelectorAll('d2l-filter-dropdown-category');
-		for (var i = 0; i < categories.length; i++) {
+		for (let i = 0; i < categories.length; i++) {
 			const options = categories[i].querySelectorAll('d2l-filter-dropdown-option');
-			for (var j = 0; j < options.length; j++) {
+			for (let j = 0; j < options.length; j++) {
 				if (options[j].selected) {
 					result.push({categoryKey: categories[i].key, optionKey: options[j].value});
 				}
@@ -595,13 +595,13 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	}
 
 	_parseQuery(queryString) {
-		var query = [];
+		const query = [];
 		if (queryString) {
-			var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
-			for (var i = 0; i < pairs.length; i++) {
-				var pair = pairs[i].split('=');
-				var decodedKey = this._urlDecodePlusAsSpace(pair[0]);
-				var decodedValue = this._urlDecodePlusAsSpace(pair[1] || '');
+			const pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+			for (let i = 0; i < pairs.length; i++) {
+				const pair = pairs[i].split('=');
+				const decodedKey = this._urlDecodePlusAsSpace(pair[0]);
+				const decodedValue = this._urlDecodePlusAsSpace(pair[1] || '');
 				query[i] = [decodedKey, decodedValue];
 			}
 		}
@@ -612,8 +612,8 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		if (!str) {
 			return str;
 		}
-		var strWithPlusAsSpace = str.replace('+', ' ');
-		var strDecoded = window.decodeURIComponent(strWithPlusAsSpace);
+		const strWithPlusAsSpace = str.replace('+', ' ');
+		const strDecoded = window.decodeURIComponent(strWithPlusAsSpace);
 		return strDecoded;
 	}
 }
