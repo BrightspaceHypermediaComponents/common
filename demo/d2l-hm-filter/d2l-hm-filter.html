@@ -43,14 +43,28 @@
 			<h3>d2l-hm-filter</h3>
 			<demo-snippet>
 				<template>
-					<d2l-hm-filter href="data/filters.json" token=""></d2l-hm-filter>
+					<d2l-hm-filter href="data/filters.json" token="whatever"></d2l-hm-filter>
 				</template>
 			</demo-snippet>
 
 			<h3>d2l-hm-filter (with filters selected)</h3>
 			<demo-snippet>
 				<template>
-					<d2l-hm-filter href="data/filters-on.json" token=""></d2l-hm-filter>
+					<d2l-hm-filter href="data/filters-on.json" token="whatever"></d2l-hm-filter>
+				</template>
+			</demo-snippet>
+
+			<h3>d2l-hm-filter with delayed applying until dropdown is closed</h3>
+			<demo-snippet>
+				<template>
+					<d2l-hm-filter delayed-filter href="data/filters.json" token="whatever"></d2l-hm-filter>
+				</template>
+			</demo-snippet>
+
+			<h3>d2l-hm-filter with delayed loading of the first category's options until the dropdown is opened</h3>
+			<demo-snippet>
+				<template>
+					<d2l-hm-filter lazy-load-options href="data/filters-on.json" token="whatever"></d2l-hm-filter>
 				</template>
 			</demo-snippet>
 		</div>

@@ -1,6 +1,8 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
 import 'd2l-facet-filter-sort/components/d2l-filter-dropdown/d2l-filter-dropdown.js';
+import 'd2l-facet-filter-sort/components/d2l-filter-dropdown/d2l-filter-dropdown-category.js';
+import 'd2l-facet-filter-sort/components/d2l-filter-dropdown/d2l-filter-dropdown-option.js';
 import 'd2l-polymer-siren-behaviors/store/entity-behavior.js';
 import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
 
@@ -16,7 +18,29 @@ import 'd2l-polymer-siren-behaviors/store/siren-action-behavior.js';
 class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.EntityBehavior, D2L.PolymerBehaviors.Siren.SirenActionBehavior], PolymerElement) {
 	static get template() {
 		return html`
-		<d2l-filter-dropdown></d2l-filter-dropdown>
+		<d2l-filter-dropdown total-selected-option-count="[[_totalSelectedCount]]">
+			<dom-repeat items="[[_filters]]" as="category">
+				<template>
+					<d2l-filter-dropdown-category
+						category-text="[[category.title]]"
+						key="[[category.key]]"
+						selected-option-count="[[category.numOptionsSelected]]">
+
+						<dom-repeat items="[[category.options]]" as="option">
+							<template>
+								<d2l-filter-dropdown-option
+									hidden$="[[option.hidden]]"
+									selected="[[option.selected]]"
+									text="[[option.title]]"
+									value="[[option.key]]">
+								</d2l-filter-dropdown-option>
+							</template>
+						</dom-repeat>
+
+					</d2l-filter-dropdown-category>
+				</template>
+			</dom-repeat>
+		</d2l-filter-dropdown>
 		`;
 	}
 	static get is() { return 'd2l-hm-filter'; }
@@ -26,7 +50,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				type: Boolean,
 				value: false
 			},
-			categoryWhitelist: {
+			categoryIncludeList: {
 				type: Array,
 				value: []
 			},
@@ -44,15 +68,16 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				value: [
 					// {
 					// 	key: '',
-					// 	startingApplied: 0,
+					// 	numOptionsSelected: 0,
 					// 	title: '',
 					// 	href: '',
 					// 	loaded: false,
 					// 	clearAction: {},
 					// 	options: [
 					// 		{
+					// 			hidden: false,
 					// 			key: '',
-					//  			title: '',
+					// 			title: '',
 					// 			selected: '',
 					// 			toggleAction: {}
 					// 		}
@@ -60,11 +85,11 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 					// }
 				]
 			},
-			_clearAction: {
-				type: Object,
-				value: {}
+			_totalSelectedCount: {
+				type: Number,
+				value: 0,
 			},
-			_dropdown: {
+			_clearAction: {
 				type: Object,
 				value: {}
 			},
@@ -85,27 +110,29 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	attached() {
 		if (this.delayedFilter) {
-			this.addEventListener('d2l-filter-dropdown-closed', this._handleOptionsChanged);
+			this.addEventListener('d2l-filter-dropdown-close', this._handleOptionsChanged);
 		} else {
-			this.addEventListener('d2l-filter-dropdown-option-changed', this._handleOptionChanged);
+			this.addEventListener('d2l-filter-dropdown-option-change', this._handleOptionChanged);
 		}
 		if (this.lazyLoadOptions) {
 			this.addEventListener('d2l-dropdown-open', this._handleDropdownOpened);
 		}
-		this.addEventListener('d2l-filter-selected-changed', this._handleSelectedFilterCategoryChanged);
+		this.addEventListener('d2l-filter-dropdown-category-selected', this._handleFilterCategorySelected);
+		this.addEventListener('d2l-filter-dropdown-category-searched', this._handleFilterCategorySearched);
 		this.addEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
 	detached() {
 		if (this.delayedFilter) {
-			this.removeEventListener('d2l-filter-dropdown-closed', this._handleOptionsChanged);
+			this.removeEventListener('d2l-filter-dropdown-close', this._handleOptionsChanged);
 		} else {
-			this.removeEventListener('d2l-filter-dropdown-option-changed', this._handleOptionChanged);
+			this.removeEventListener('d2l-filter-dropdown-option-change', this._handleOptionChanged);
 		}
 		if (this.lazyLoadOptions) {
 			this.removeEventListener('d2l-dropdown-open', this._handleDropdownOpened);
 		}
-		this.removeEventListener('d2l-filter-selected-changed', this._handleSelectedFilterCategoryChanged);
+		this.removeEventListener('d2l-filter-dropdown-category-selected', this._handleFilterCategorySelected);
+		this.removeEventListener('d2l-filter-dropdown-category-searched', this._handleFilterCategorySearched);
 		this.removeEventListener('d2l-filter-dropdown-cleared', this._handleFiltersCleared);
 	}
 
@@ -135,8 +162,6 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		try {
 			this._clearAction = this._getAction(entity, 'clear');
 			await this._parseFilters(entity);
-			this._dropdown = this._getFilterDropdown();
-			this._populateFilterDropdown();
 			this._dispatchFiltersLoaded();
 		} catch (err) {
 			// Unable to get actions and/or filters.
@@ -145,35 +170,17 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
-	_getFilterDropdown() {
-		return this.shadowRoot.querySelector('d2l-filter-dropdown');
-	}
-
-	_populateFilterDropdown(filter) {
-		if (filter) {
-			filter.options.forEach(function(o) {
-				this._dropdown.addFilterOption(filter.key, o.key, o.title, o.selected);
-			}.bind(this));
-		} else {
-			this._filters.forEach(function(f) {
-				this._dropdown.addFilterCategory(f.key, f.title, f.startingApplied);
-				f.options.forEach(function(o) {
-					this._dropdown.addFilterOption(f.key, o.key, o.title, o.selected);
-				}.bind(this));
-			}.bind(this));
-		}
-	}
-
-	_shouldApplyWhitelist() {
-		return this.categoryWhitelist && this.categoryWhitelist.length;
+	_shouldApplyIncludeList() {
+		return this.categoryIncludeList && this.categoryIncludeList.length;
 	}
 
 	_parseEntityToFilter(entity, numApplied) {
 		if (entity) {
 			const key = this._getCategoryKeyFromHref(entity.href);
+			this._totalSelectedCount += numApplied[key] || 0;
 			return {
 				key: key,
-				startingApplied: numApplied[key] || 0,
+				numOptionsSelected: numApplied[key] || 0,
 				title: entity.title,
 				href: entity.href,
 				loaded: false,
@@ -186,8 +193,9 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _parseFilters(entity) {
 		if (entity) {
 			const filters = [];
-			if (this._shouldApplyWhitelist()) {
-				this.categoryWhitelist.forEach(cw => {
+			this._totalSelectedCount = 0;
+			if (this._shouldApplyIncludeList()) {
+				this.categoryIncludeList.forEach(cw => {
 					const found = this._findInArray(entity.entities, e => e.href.indexOf(cw) >= 0);
 					if (found) {
 						filters.push(this._parseEntityToFilter(found, entity.properties.applied));
@@ -241,22 +249,23 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		return customParams;
 	}
 
-	async _handleOptionsChanged(e) {
+	async _handleOptionsChanged() {
 		this._dispatchFiltersUpdating();
-		const applied = await this._toggleFilterOptions(e.detail.selectedFilters);
+
+		const applied = await this._toggleFilterOptions(this._getAllSelectedOptions());
 		this._dispatchFiltersUpdated(applied);
 	}
 
 	async _handleDropdownOpened() {
 		if (this.lazyLoadOptions && this._filters && this._filters.length) {
 			this._shouldLoadOptions = true;
-			await this._handleSelectedFilterCategoryChanged({detail: {selectedKey: this._selectedCategory || this._filters[0].key}});
+			await this._handleFilterCategorySelected({detail: {categoryKey: this._selectedCategory || this._filters[0].key}});
 		}
 	}
 
 	async _handleOptionChanged(e) {
-		const option = this._getFilterOptionByKey(e.detail.categoryKey, e.detail.optionKey);
-		if (option && option.selected !== e.detail.newValue) {
+		const option = this._getFilterOptionByKey(e.detail.categoryKey, e.detail.menuItemKey);
+		if (option && option.selected !== e.detail.selected) {
 			this._dispatchFiltersUpdating();
 			const filter = this._getFilterCategoryByKey(e.detail.categoryKey);
 			const apply = await this._toggleOption(filter, option);
@@ -276,19 +285,39 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
-	async _handleSelectedFilterCategoryChanged(e) {
-		this._selectedCategory = e.detail.selectedKey;
+	async _handleFilterCategorySelected(e) {
+		this._selectedCategory = e.detail.categoryKey;
 		if (!this._shouldLoadOptions) {
 			this._shouldLoadOptions = true;
 			if (this.lazyLoadOptions) {
 				return;
 			}
 		}
-		const filter = this._findInArray(this._filters, f => f.key === e.detail.selectedKey);
+
+		const filterIndex = this._filters.findIndex(f => f.key === e.detail.categoryKey);
+		const filter = this._filters[filterIndex];
 		if (!filter.loaded) {
-			filter.options = await this._getFilterOptions(filter.href, filter.key);
-			this._populateFilterDropdown(filter);
+			const options = await this._getFilterOptions(filter.href, filter.key);
+			this.set(`_filters.${filterIndex}.options`, options);
 			filter.loaded = true;
+		}
+	}
+
+	_handleFilterCategorySearched(e) {
+		for (var i = 0; i < this._filters.length; i++) {
+			if (this._filters[i].key === e.detail.categoryKey) {
+				for (var j = 0; j < this._filters[i].options.length; j++) {
+					if (e.detail.value === '') {
+						this.set(`_filters.${i}.options.${j}.hidden`, false);
+					} else {
+						if (this._filters[i].options[j].title.toLowerCase().indexOf(e.detail.value.toLowerCase()) > -1) {
+							this.set(`_filters.${i}.options.${j}.hidden`, false);
+						} else {
+							this.set(`_filters.${i}.options.${j}.hidden`, true);
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -335,9 +364,11 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 					}
 					f.clearAction = this._getAction(cleared, 'clear');
 					this._updateToggleActions(cleared, f);
-					f.options.forEach(o => {
-						o.selected = false;
-					});
+					this._totalSelectedCount -= f.numOptionsSelected;
+					this.set(`_filters.${j}.numOptionsSelected`, 0);
+					for (var i = 0; i < this._filters[j].options.length; i++) {
+						this.set(`_filters.${j}.options.${i}.selected`, false);
+					}
 					applyAll = await this._apply(cleared);
 				} else {
 					let apply = null;
@@ -377,9 +408,17 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 
 	async _toggleOption(filter, option) {
 		let result = null;
+		const filterIndex = this._filters.findIndex(f => f.key === filter.key);
 		try {
 			result = await this._performSirenActionWithQueryParams(option.toggleAction);
 			option.selected = !option.selected;
+			if (option.selected) {
+				this.set(`_filters.${filterIndex}.numOptionsSelected`, filter.numOptionsSelected + 1);
+				this._totalSelectedCount++;
+			} else {
+				this.set(`_filters.${filterIndex}.numOptionsSelected`, filter.numOptionsSelected - 1);
+				this._totalSelectedCount--;
+			}
 			this._updateToggleActions(result, filter);
 		} catch (err) {
 			this._dispatchFilterError(err);
@@ -406,11 +445,13 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				this._updateToggleActions(filterEntity.entity, f);
 			}
 		}
-		this._filters.forEach(f => {
-			f.options.forEach(o => {
-				o.selected = false;
-			});
-		});
+		for (var i = 0; i < this._filters.length; i++) {
+			this.set(`_filters.${i}.numOptionsSelected`, 0);
+			for (var j = 0; j < this._filters[i].options.length; j++) {
+				this.set(`_filters.${i}.options.${j}.selected`, false);
+			}
+		}
+		this._totalSelectedCount = 0;
 
 		const customParams = this._getCustomPageSizeParams();
 		return await this._apply(cleared, customParams);
@@ -454,17 +495,15 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 		}
 	}
 
-	_getTotalSelectedFilterOptions() {
-		let result = 0;
-		for (let i = 0; i < this._filters.length; i++) {
-			if (this._filters[i].options.length) {
-				for (let j = 0; j < this._filters[i].options.length; j++) {
-					if (this._filters[i].options[j].selected) {
-						result++;
-					}
+	_getAllSelectedOptions() {
+		var result = [];
+		const categories = this.shadowRoot.querySelectorAll('d2l-filter-dropdown-category');
+		for (var i = 0; i < categories.length; i++) {
+			const options = categories[i].querySelectorAll('d2l-filter-dropdown-option');
+			for (var j = 0; j < options.length; j++) {
+				if (options[j].selected) {
+					result.push({categoryKey: categories[i].key, optionKey: options[j].value});
 				}
-			} else {
-				result += this._filters[i].startingApplied;
 			}
 		}
 		return result;
@@ -489,7 +528,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				{
 					detail: {
 						filteredActivities: filtered,
-						totalSelectedFilters: this._getTotalSelectedFilterOptions()
+						totalSelectedFilters: this._totalSelectedCount
 					},
 					composed: true,
 					bubbles: true
@@ -504,7 +543,7 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 				'd2l-hm-filter-filters-loaded',
 				{
 					detail: {
-						totalSelectedFilters: this._getTotalSelectedFilterOptions()
+						totalSelectedFilters: this._totalSelectedCount
 					},
 					composed: true,
 					bubbles: true
