@@ -155,13 +155,13 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 	}
 
 	_parseQuery(queryString) {
-		var query = [];
+		const query = [];
 		if (queryString) {
-			var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
-			for (var i = 0; i < pairs.length; i++) {
-				var pair = pairs[i].split('=');
-				var decodedKey = this._urlDecodePlusAsSpace(pair[0]);
-				var decodedValue = this._urlDecodePlusAsSpace(pair[1] || '');
+			const pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+			for (let i = 0; i < pairs.length; i++) {
+				const pair = pairs[i].split('=');
+				const decodedKey = this._urlDecodePlusAsSpace(pair[0]);
+				const decodedValue = this._urlDecodePlusAsSpace(pair[1] || '');
 				query[i] = [decodedKey, decodedValue];
 			}
 		}
@@ -172,8 +172,8 @@ class D2LHypermediaSearch extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Sir
 		if (!str) {
 			return str;
 		}
-		var strWithPlusAsSpace = str.replace('+', ' ');
-		var strDecoded = window.decodeURIComponent(strWithPlusAsSpace);
+		const strWithPlusAsSpace = str.replace('+', ' ');
+		const strDecoded = window.decodeURIComponent(strWithPlusAsSpace);
 		return strDecoded;
 	}
 
