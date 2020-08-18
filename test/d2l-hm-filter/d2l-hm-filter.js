@@ -65,6 +65,7 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 				title: 'Option 1',
 				key: '1',
 				categoryKey: expectedFilters[f].key,
+				hidden: false,
 				selected: false,
 				toggleAction: {
 					name: 'add-filter',
@@ -207,6 +208,42 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 			filter.addEventListener('d2l-hm-filter-filters-loaded', function(e) {
 				assert.equal(1, e.detail.totalSelectedFilters);
 				done();
+			});
+
+			loadFilters('data/filters-on.json');
+		});
+		test('searching a category filters out options that do not match', (done) => {
+			filter.addEventListener('d2l-hm-filter-filters-loaded', function() {
+				_assertFiltersEqualGiven(expectedFilters, filter._filters);
+
+				expectedFilters[0].options[0].hidden = true;
+				filter._handleFilterCategorySearched({detail: { categoryKey: expectedFilters[0].key, value: 'test' }});
+				requestAnimationFrame(() => {
+					_assertFiltersEqualGiven(expectedFilters, filter._filters);
+					done();
+				});
+			});
+
+			loadFilters('data/filters.json');
+
+		});
+		test('when filters are re-loaded, an applied search is re-applied', (done) => {
+			let firstCategory,
+				reload = false;
+
+			filter.addEventListener('d2l-hm-filter-filters-loaded', function() {
+				if (!reload) {
+					reload = true;
+					assert.equal(filter._filters[0].options[0].hidden, false);
+
+					firstCategory = filter.shadowRoot.querySelector('d2l-filter-dropdown-category');
+					firstCategory.searchValue = 'test';
+					loadFilters('data/filters-on.json');
+				} else {
+					assert.equal(firstCategory.searchValue, 'test');
+					assert.equal(filter._filters[0].options[0].hidden, true);
+					done();
+				}
 			});
 
 			loadFilters('data/filters-on.json');
