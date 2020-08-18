@@ -330,11 +330,21 @@ class D2LHypermediaFilter extends mixinBehaviors([D2L.PolymerBehaviors.Siren.Ent
 	async _getFilterOptions(href, cKey) {
 		const filter = await this._fetchFromStore(href);
 		if (filter && filter.entity && filter.entity.entities) {
+			let search = '';
+			const categories = this.shadowRoot.querySelectorAll('d2l-filter-dropdown-category');
+
+			for (const category of categories) {
+				if (category.key === cKey && category.searchValue) {
+					search = category.searchValue;
+				}
+			}
+
 			return filter.entity.entities.map(o => {
 				return {
 					title: o.title,
 					key: o.properties.filter,
 					categoryKey: cKey,
+					hidden: search !== '' && o.title.toLowerCase().indexOf(search) === -1,
 					selected: this._getOptionStatusFromClasses(o.class),
 					toggleAction: this._getOptionToggleAction(o)
 				};
