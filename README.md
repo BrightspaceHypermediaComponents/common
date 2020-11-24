@@ -1,5 +1,4 @@
 # d2l-common
-[![Build status][ci-image]][ci-url]
 
 Hypermedia components that can be used against standardized HM route workflows
 
@@ -58,11 +57,12 @@ To lint AND run local unit tests:
 npm test
 ```
 
-## Versioning, Releasing & Deploying
+## Versioning & Releasing
 
-By default, when a pull request is merged the patch version in the `package.json` will be incremented, a tag will be created, and a Github release will be created.
+All version changes should obey [semantic versioning](https://semver.org/) rules.
 
-Include `[increment major]`, `[increment minor]` or `[skip version]` in your merge commit message to change the default versioning behavior.
+Releases use the [semantic-release](https://semantic-release.gitbook.io/) tooling and the [angular preset](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) for commit message syntax. Upon release, the version in `package.json` is updated and a tag and GitHub release is created.
 
-[ci-url]: https://travis-ci.com/BrightspaceHypermediaComponents/common
-[ci-image]: https://travis-ci.com/BrightspaceHypermediaComponents/common.svg?branch=master
+Commits prefixed with `feat` will trigger a minor release, while `fix` or `perf` will trigger a patch release. A commit containing `BREAKING CHANGE` will cause a major release to occur.
+
+Other useful prefixes that will not trigger a release: `build`, `ci`, `docs`, `refactor`, `style` and `test`. More details in the [Angular Contribution Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#type).
