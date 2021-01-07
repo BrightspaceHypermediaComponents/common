@@ -36,8 +36,8 @@
     "whatwg-fetch": "^3.0.0"
   },
   "dependencies": {
+    "@brightspace-ui-labs/facet-filter-sort": "^4",
     "@polymer/polymer": "^3.0.0",
-    "d2l-facet-filter-sort": "BrightspaceUI/facet-filter-sort#semver:^3",
     "d2l-polymer-siren-behaviors": "Brightspace/polymer-siren-behaviors#semver:^1"
   }
 }

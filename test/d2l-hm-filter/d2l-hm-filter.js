@@ -236,7 +236,7 @@ import '@polymer/iron-test-helpers/mock-interactions.js';
 					reload = true;
 					assert.equal(filter._filters[0].options[0].hidden, false);
 
-					firstCategory = filter.shadowRoot.querySelector('d2l-filter-dropdown-category');
+					firstCategory = filter.shadowRoot.querySelector('d2l-labs-filter-dropdown-category');
 					firstCategory.searchValue = 'test';
 					loadFilters('data/filters-on.json');
 				} else {

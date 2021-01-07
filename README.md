@@ -21,7 +21,7 @@ Include the [webcomponents.js](http://webcomponents.org/polyfills/) "loader" pol
 
 ### Filter
 
-This is a HM wrapper around the filter component from `d2l-facet-filter-sort`.  It takes a `href` for a filters collection.
+This is a HM wrapper around the filter component from `@brightspace-ui-labs/facet-filter-sort`.  It takes an `href` for a filters collection.
 
 ## Developing, Testing and Contributing
 
